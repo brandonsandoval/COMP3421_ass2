@@ -5,13 +5,14 @@ import java.awt.event.KeyListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.glu.GLU;
 
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * COMMENT: Comment Game 
@@ -19,6 +20,8 @@ import com.jogamp.opengl.util.FPSAnimator;
  * @author malcolmr, Brandon Sandoval
  */
 public class Game extends JFrame implements GLEventListener, KeyListener {
+
+    private static final long serialVersionUID = 1L;
 
     private Terrain myTerrain;
     
@@ -80,6 +83,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glRotated (angleY, 0, 1, 0);
         gl.glRotated (angleZ, 0, 0, 1);
         
+        drawTerrain(gl);
+        drawTrees(gl);
+        drawRoads(gl);
+    
+    }
+    
+    /**
+     * Draws the terrain
+     * @param gl
+     */
+    public void drawTerrain(GL2 gl) {
         // 4 points of a square (from x,z to x+1,z+1 with altitude y)
         double p0[] = {0, 0, 0};
         double p1[] = {0, 0, 0};
@@ -110,12 +124,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 gl.glBegin(GL2.GL_TRIANGLES);{
                   
                     // Green triangle
-                    gl.glColor3f(0f,0f,0.7f);
+                    gl.glColor3f(0f,0.7f,0f);
                     gl.glVertex3dv(p0,0);
                     gl.glVertex3dv(p1,0);
                     gl.glVertex3dv(p2,0);
                     // Dark-green triangle
-                    gl.glColor3f(0f,0f,0.6f);
+                    gl.glColor3f(0f,0.6f,0f);
                     gl.glVertex3dv(p2,0);
                     gl.glVertex3dv(p1,0);
                     gl.glVertex3dv(p3,0);
@@ -123,7 +137,46 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
                 }gl.glEnd();
             }
         }
+    }
     
+    /**
+     * Tree drawn as a rectangle at the moment
+     * TODO We need to fix Terrain.altitude() to draw them at there correct heights
+     * @param gl
+     */
+    public void drawTrees(GL2 gl) {
+
+        GLUT glut = new GLUT();
+        double[] t = {0,0,0};
+        double height = 5;
+        List<Tree> trees = myTerrain.trees();
+        
+        for(Tree tree : trees) {
+            t = tree.getPosition();
+
+            // Head of tree
+            gl.glColor3f(0.0f, 0.4f, 0.0f);
+            gl.glPushMatrix();
+            gl.glTranslated(t[0], t[1]+height, t[2]);
+            glut.glutSolidSphere(1, 16, 16);
+            gl.glPopMatrix();
+
+            // Trunk of tree
+            gl.glColor3f(0.50f, 0.33f, 0.22f);
+            gl.glPushMatrix();
+            gl.glTranslated(t[0], t[1], t[2]);
+            gl.glRotated(-90, 1, 0, 0);
+            glut.glutSolidCylinder(0.25, height, 32, 1);
+            gl.glPopMatrix();
+        }
+    }
+    
+    /**
+     * 
+     * @param gl
+     */
+    public void drawRoads(GL2 gl) {
+        // TODO draw Roads
     }
 
     @Override
