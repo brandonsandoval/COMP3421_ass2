@@ -13,7 +13,6 @@ import com.jogamp.opengl.glu.GLU;
 
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * COMMENT: Comment Game 
@@ -80,6 +79,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glClearColor(0.9f, 0.9f, 1.0f, 0.0f);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
+        
         GLU glu = new GLU();
         // Position the camera for viewing.
         glu.gluLookAt(-10.0, 5, -10.0, 0.0, 2.0, 0.0, 0.0, 1.0, 0.0);
@@ -96,102 +96,19 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         lp.setPositionAngle(s[0], s[1], s[2]);
         lp.setup(gl);
         
-        drawTerrain(gl);
-        drawTrees(gl);
-        drawRoads(gl);
-    
-    }
-    
-    /**
-     * Draws the terrain
-     * @param gl
-     */
-    public void drawTerrain(GL2 gl) {
-        // 4 points of a square (from x,z to x+1,z+1 with altitude y)
-        double p0[] = {0, 0, 0};
-        double p1[] = {0, 0, 0};
-        double p2[] = {0, 0, 0};
-        double p3[] = {0, 0, 0};
-
-        MaterialLightProp.terrainLightProp(gl);
-        // loop over the altitude grid in myTerrain
-        for(int z = 0; z < myTerrain.size().height -1; z++) {
-            for(int x = 0; x < myTerrain.size().width -1; x++) {
-            
-                p0[0] = x;
-                p0[1] = myTerrain.getGridAltitude(x  , z  );
-                p0[2] = z;
-                
-                p1[0] = x;
-                p1[1] = myTerrain.getGridAltitude(x  , z+1);
-                p1[2] = z+1;
-                
-                p2[0] = x+1;
-                p2[1] = myTerrain.getGridAltitude(x+1, z  );
-                p2[2] = z;
-                
-                p3[0] = x+1;
-                p3[1] = myTerrain.getGridAltitude(x+1, z+1);
-                p3[2] = z+1;
-              
-                // The two triangles represents 1 grid square
-                double[] n;
-                gl.glBegin(GL2.GL_TRIANGLES);{
-                    n = MathUtil.normal(p0, p1, p2);
-                    gl.glNormal3d(n[0], n[1], n[2]);
-                    gl.glVertex3dv(p0,0);
-                    gl.glVertex3dv(p1,0);
-                    gl.glVertex3dv(p2,0);
-
-                    n = MathUtil.normal(p2, p1, p3);
-                    gl.glNormal3d(n[0], n[1], n[2]);
-                    gl.glVertex3dv(p2,0);
-                    gl.glVertex3dv(p1,0);
-                    gl.glVertex3dv(p3,0);
-                    
-                }gl.glEnd();
-            }
-        }
-    }
-    
-    /**
-     * Tree drawn as a rectangle at the moment
-     * TODO We need to fix Terrain.altitude() to draw them at there correct heights
-     * @param gl
-     */
-    public void drawTrees(GL2 gl) {
-
-        GLUT glut = new GLUT();
-        double[] t = {0,0,0};
-        double height = 5;
+        // Draw terrain
+        myTerrain.drawTerrain(gl);
+        // Draw all trees
         List<Tree> trees = myTerrain.trees();
-        
         for(Tree tree : trees) {
-            t = tree.getPosition();
-
-            // Head of tree
-            MaterialLightProp.treeHeadLightProp(gl);
-            gl.glPushMatrix();
-            gl.glTranslated(t[0], t[1]+height, t[2]);
-            glut.glutSolidSphere(1, 16, 16);
-            gl.glPopMatrix();
-
-            // Trunk of tree
-            MaterialLightProp.treeTrunkLightProp(gl);
-            gl.glPushMatrix();
-            gl.glTranslated(t[0], t[1], t[2]);
-            gl.glRotated(-90, 1, 0, 0);
-            glut.glutSolidCylinder(0.25, height, 32, 1);
-            gl.glPopMatrix();
+            tree.drawTree(gl);
         }
-    }
+        // Draw all roads
+        List<Road> roads = myTerrain.roads();
+        for(Road road : roads) {
+            road.drawRoad(gl);
+        }
     
-    /**
-     * 
-     * @param gl
-     */
-    public void drawRoads(GL2 gl) {
-        // TODO draw Roads
     }
 
     @Override

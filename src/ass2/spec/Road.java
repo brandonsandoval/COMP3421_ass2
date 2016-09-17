@@ -3,10 +3,13 @@ package ass2.spec;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.util.gl2.GLUT;
+
 /**
  * COMMENT: Comment Road 
  *
- * @author malcolmr
+ * @author malcolmr, BrandonSandoval
  */
 public class Road {
 
@@ -146,5 +149,10 @@ public class Road {
         throw new IllegalArgumentException("" + i);
     }
 
+
+    public void drawRoad(GL2 gl) {
+        // TODO draw road here
+        
+    }
 
 }
