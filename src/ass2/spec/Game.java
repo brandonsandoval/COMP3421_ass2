@@ -1,11 +1,11 @@
 /************************************
- * 			PACKAGE					*
+ *            PACKAGE               *
  ***********************************/
 package ass2.spec;
 
 
 /************************************
- * 			IMPORTS					*
+ *            IMPORTS               *
  ***********************************/
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,134 +23,134 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 
 /**************************************************
- * 			GAME				
+ *                  GAME                
  * 
  * @author malcolmr, BrandonSandoval, James Shin
  **************************************************/
 public class Game extends JFrame implements GLEventListener {
 
-	
-	/************************************
-	 * 				FIELDS				*
-	 ***********************************/
-	private static final long serialVersionUID = 1L;
-
-	//	Misc
-	private static final int X = 0;
-	private static final int Y = 1;
-	private static final int Z = 2;
-	
-	//	JFrame / Panel Settings
-	private static final int WIN_HEIGHT = 480;
-	private static final int WIN_WIDTH = 480;
-	private static final int FPS = 60;
-	
-	//	Terrain
-	private Terrain myTerrain;
-	
-	//	Camera
-	private Camera myCamera;
-
-	//	Graphics
-	private boolean wireframeMode;
-	private int count;
-	
+    
     /************************************
-     * 			CONSTRUCTOR				*
+     *             FIELDS               *
      ***********************************/
-	 public Game(Terrain terrain) {
-    	super("Assignment 2");
-    	
+    private static final long serialVersionUID = 1L;
+
+    // Misc
+    private static final int X = 0;
+    private static final int Y = 1;
+    private static final int Z = 2;
+    
+    // JFrame / Panel Settings
+    private static final int WIN_HEIGHT = 480;
+    private static final int WIN_WIDTH = 480;
+    private static final int FPS = 60;
+    
+    // Terrain
+    private Terrain myTerrain;
+    
+    // Camera
+    private Camera myCamera;
+
+    // Graphics
+    private boolean wireframeMode;
+    private int count;
+    
+    /************************************
+     *           CONSTRUCTOR            *
+     ***********************************/
+     public Game(Terrain terrain) {
+        super("Assignment 2");
+        
         this.myTerrain = terrain;
         this.myCamera = new Camera();
         this.wireframeMode = true;
-        this.count = 0; 			//	just needed temporaily
-	 }
-	 
-	 
-	 /************************************
-	  * 		METHOD (RUN)    		 *
-	  ***********************************/
-	public void run() {
-		
-		//	Init Profile
-		GLProfile glp = GLProfile.getDefault();
-		GLCapabilities caps = new GLCapabilities(glp);
-		
-		//	Create Panel and Add Listeners
-		GLJPanel panel = new GLJPanel();
-		panel.addGLEventListener(this);
-		panel.addKeyListener(myCamera);
-		panel.addMouseMotionListener(myCamera);
-		//panel.addMouseListener(MouseController);
-		//panel.addMouseMotionListener(MouseMotionController);
-		//panel.addMouseWheelListener(MouseWheelController);
-		panel.setFocusable(true);
-		
-		// Add an animator to call 'display' at 60fps
-		FPSAnimator animator = new FPSAnimator(FPS);
-		animator.add(panel);
-		animator.start();
-		
-		//	Add Panel to this Frame
-		getContentPane().add(panel);
-		
-		//	Frame Settings
-		setSize(WIN_HEIGHT, WIN_WIDTH);
-		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);     
-		
-	}
-	
-	 /************************************
-	  * 		METHOD (UPDATE)    		 *
-	  ***********************************/
-	private void update(GL2 gl) {
-    	
-		//	Prints every second
-		if(count % 60 == 0) {
-			System.out.println("Pos: " + myCamera.getPos()[X] + " " + myCamera.getPos()[Y] + " " + myCamera.getPos()[Z]);
-			System.out.println("Angle: " + myCamera.getAngle()[X] + " " + myCamera.getAngle()[Y] + " " + myCamera.getAngle()[Z]);
-			System.out.println("Orie: " + myCamera.getOrien()[X] + " " + myCamera.getOrien()[Y] + " " + myCamera.getOrien()[Z]);
-			System.out.println("Fov: " + myCamera.getFov() + " Near: " + myCamera.getZNear() + " Far: " + myCamera.getZFar());
-			System.out.println();
-		}
-		
-		myCamera.update();
-    	
-		
-    	count++;
-	}
-	
-	
-	 /************************************
-	  * 		METHOD (RENDER)    		 *
-	  ***********************************/
-	private void render(GL2 gl) {
-		
-		//	Load ModelView Matrix
-		gl.glMatrixMode(GL2.GL_MODELVIEW);
+        this.count = 0;             // just needed temporaily
+     }
+     
+     
+     /************************************
+      *         METHOD (RUN)             *
+      ***********************************/
+    public void run() {
+        
+        // Init Profile
+        GLProfile glp = GLProfile.getDefault();
+        GLCapabilities caps = new GLCapabilities(glp);
+        
+        // Create Panel and Add Listeners
+        GLJPanel panel = new GLJPanel();
+        panel.addGLEventListener(this);
+        panel.addKeyListener(myCamera);
+        panel.addMouseMotionListener(myCamera);
+        //panel.addMouseListener(MouseController);
+        //panel.addMouseMotionListener(MouseMotionController);
+        //panel.addMouseWheelListener(MouseWheelController);
+        panel.setFocusable(true);
+        
+        // Add an animator to call 'display' at 60fps
+        FPSAnimator animator = new FPSAnimator(FPS);
+        animator.add(panel);
+        animator.start();
+        
+        // Add Panel to this Frame
+        getContentPane().add(panel);
+        
+        // Frame Settings
+        setSize(WIN_HEIGHT, WIN_WIDTH);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);     
+        
+    }
+    
+     /************************************
+      *         METHOD (UPDATE)             *
+      ***********************************/
+    private void update(GL2 gl) {
+        
+        // Prints every second
+        if(count % 60 == 0) {
+            System.out.println("Pos: " + myCamera.getPos()[X] + " " + myCamera.getPos()[Y] + " " + myCamera.getPos()[Z]);
+            System.out.println("Angle: " + myCamera.getAngle()[X] + " " + myCamera.getAngle()[Y] + " " + myCamera.getAngle()[Z]);
+            System.out.println("Orie: " + myCamera.getOrien()[X] + " " + myCamera.getOrien()[Y] + " " + myCamera.getOrien()[Z]);
+            System.out.println("Fov: " + myCamera.getFov() + " Near: " + myCamera.getZNear() + " Far: " + myCamera.getZFar());
+            System.out.println();
+        }
+        
+        myCamera.update();
+        
+        
+        count++;
+    }
+    
+    
+     /************************************
+      *         METHOD (RENDER)             *
+      ***********************************/
+    private void render(GL2 gl) {
+        
+        // Load ModelView Matrix
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         
-        //	Clear Screen and Buffer
-        gl.glClearColor(0, 0, 0, 1);		//	Black
+        // Clear Screen and Buffer
+        gl.glClearColor(0, 0, 0, 1);        //    Black
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         
 
 
 
 
-        //	Manually Set Camera
+        // Manually Set Camera
         /*GLU glu = new GLU();
         // Position the camera for viewing.
         glu.gluLookAt(1, 20, 0, 0.0, 0, 0.0, 0.0, 1.0, 0.0);*/
 
-        //	Setup Camera
-		myCamera.setView(gl);
-		
-		//	Light Setting
+        // Setup Camera
+        myCamera.setView(gl);
+        
+        // Light Setting
         /*
-		LightProp lp = new LightProp();
+        LightProp lp = new LightProp();
         float[] s = myTerrain.getSunlight();
         lp.setProperties(0.1f, 0.5f, 0.1f, 0.2f);
         lp.setPositionAngle(s[0], s[1], s[2]);
@@ -158,20 +158,20 @@ public class Game extends JFrame implements GLEventListener {
         */
 
 
-		if(wireframeMode) {
-	    	gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
-	    	gl.glColor4f(1, 0, 0, 1);
-		}
-		
-		//	Draw Terrain
-		myTerrain.drawTerrain(gl);
-		
-    	gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
-    	gl.glColor4f(0, 0, 0, 1);
-    	myTerrain.drawTerrain(gl);
-    	
+        if(wireframeMode) {
+            gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+            gl.glColor4f(1, 0, 0, 1);
+        }
+        
+        // Draw Terrain
+        myTerrain.drawTerrain(gl);
+        
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glColor4f(0, 0, 0, 1);
+        myTerrain.drawTerrain(gl);
+        
         /*        
-		// Draw all trees
+        // Draw all trees
         List<Tree> trees = myTerrain.trees();
         for(Tree tree : trees) {
             tree.drawTree(gl);
@@ -183,33 +183,33 @@ public class Game extends JFrame implements GLEventListener {
         }
         */
     
-        //	Needed for Debugging
+        // Needed for Debugging
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-	}
+    }
 
-	 
-	 /************************************
-	  * 	METHOD (GLEVENTLISTENER)	 *
-	  ***********************************/
-	@Override
-	public void display(GLAutoDrawable drawable) {
-		
-		GL2 gl = drawable.getGL().getGL2();
-		
-		//	Update Game State
-		update(gl);
-		
-		//	Render Game
-		render(gl);
-		
-	}
-
-	@Override
-	public void init(GLAutoDrawable drawable) {
-		
-		GL2 gl = drawable.getGL().getGL2();
+     
+     /************************************
+      *     METHOD (GLEVENTLISTENER)     *
+      ***********************************/
+    @Override
+    public void display(GLAutoDrawable drawable) {
         
-		// Set up gl with depth test
+        GL2 gl = drawable.getGL().getGL2();
+        
+        // Update Game State
+        update(gl);
+        
+        // Render Game
+        render(gl);
+        
+    }
+
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        
+        GL2 gl = drawable.getGL().getGL2();
+        
+        // Set up gl with depth test
         gl.glEnable(GL2.GL_DEPTH_TEST);
         
         // Set up gl with lighting
@@ -222,13 +222,13 @@ public class Game extends JFrame implements GLEventListener {
         gl.glEnable(GL2.GL_CULL_FACE);
         //gl.glCullFace(GL2.GL_BACK);
         
-	}
+    }
 
-	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+    @Override
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         
-		GL2 gl = drawable.getGL().getGL2();
-		
+        GL2 gl = drawable.getGL().getGL2();
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
@@ -238,19 +238,19 @@ public class Game extends JFrame implements GLEventListener {
         
         // Using a perspective camera
         GLU glu = new GLU();
-        myCamera.setSize(height, width);	//	Need to give camera window size as argument
+        myCamera.setSize(height, width);    // Need to give camera window size as argument
 
 
         glu.gluPerspective(myCamera.getFov(), (float)width/(float)height, myCamera.getZNear(), myCamera.getZFar());
 
-	}
-	
-	@Override
-	public void dispose(GLAutoDrawable drawable) {}
+    }
+    
+    @Override
+    public void dispose(GLAutoDrawable drawable) {}
 
-	
+    
     /************************************
-     * 			 MAIN		
+     *              MAIN        
      *
      * @param args - The first argument is a level file in JSON format
      * @throws FileNotFoundException
@@ -260,5 +260,5 @@ public class Game extends JFrame implements GLEventListener {
         Game game = new Game(terrain);
         game.run();
     }
-	
+
 }
