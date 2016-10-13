@@ -55,13 +55,15 @@ public class Game extends JFrame implements GLEventListener {
     
     // Camera
     private Camera myCamera;
-
-    // Graphics
-    private boolean wireframeMode;
     
     // For FPS counter
     private long timing = 0;
     private int count = 0;
+    
+    // An invisible cursor
+    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+        cursorImg, new Point(0, 0), "blank cursor");
     
     /************************************
      *           CONSTRUCTOR            *
@@ -71,7 +73,6 @@ public class Game extends JFrame implements GLEventListener {
         
         this.myTerrain = terrain;
         this.myCamera = new Camera();
-        this.wireframeMode = true;
      }
      
      
@@ -88,9 +89,6 @@ public class Game extends JFrame implements GLEventListener {
         panel.addGLEventListener(this);
         panel.addKeyListener(myCamera);
         panel.addMouseMotionListener(myCamera);
-        //panel.addMouseListener(MouseController);
-        //panel.addMouseMotionListener(MouseMotionController);
-        //panel.addMouseWheelListener(MouseWheelController);
         panel.setFocusable(true);
         // Add an animator to call 'display' at 60fps
         FPSAnimator animator = new FPSAnimator(60);
@@ -100,11 +98,8 @@ public class Game extends JFrame implements GLEventListener {
         // Add Panel to this Frame
         getContentPane().add(panel);
         
-        // Remove cursor
-        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-            cursorImg, new Point(0, 0), "blank cursor");
-        getContentPane().setCursor(blankCursor);
+        // Hide cursor
+        showCursor(false);
         
         // Frame Settings
         setSize(WIN_HEIGHT, WIN_WIDTH);
@@ -133,10 +128,8 @@ public class Game extends JFrame implements GLEventListener {
             System.out.println();
             count = 0;
         }
-        
-        myCamera.update();
-        
         count++;
+        myCamera.update();
     }
     
     
@@ -150,13 +143,9 @@ public class Game extends JFrame implements GLEventListener {
         gl.glLoadIdentity();
         
         // Clear Screen and Buffer
-        gl.glClearColor(0, 0, 0, 1);        //    Black
+        gl.glClearColor(0, 0, 0, 1); // Black
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         
-
-
-
-
         // Manually Set Camera
         /*GLU glu = new GLU();
         // Position the camera for viewing.
@@ -171,13 +160,6 @@ public class Game extends JFrame implements GLEventListener {
         lp.setProperties(0.1f, 0.5f, 0.1f, 0.2f);
         lp.setPositionAngle(s[0], s[1], s[2]);
         lp.setup(gl);
-        
-
-
-        if(wireframeMode) {
-            gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
-            gl.glColor4f(1, 0, 0, 1);
-        }
         
         // Draw Terrain
         myTerrain.drawTerrain(gl);
@@ -264,6 +246,15 @@ public class Game extends JFrame implements GLEventListener {
     @Override
     public void dispose(GLAutoDrawable drawable) {}
 
+    
+    public void showCursor(boolean value) {
+        if(value) {
+            getContentPane().setCursor(blankCursor);
+        }else {
+            // Restore default cursor
+            getContentPane().setCursor(null);
+        }
+    }
     
     /************************************
      *              MAIN        
