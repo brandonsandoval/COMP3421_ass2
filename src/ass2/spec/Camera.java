@@ -220,43 +220,43 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
 
-        // Camera Movement
-        case KeyEvent.VK_A:
-        case KeyEvent.VK_D:
-            d_cameraPos[X] = 0;
-            break;
-        case KeyEvent.VK_W:
-        case KeyEvent.VK_S:
-            d_cameraPos[Z] = 0;
-            break;
-        case KeyEvent.VK_Q:
-        case KeyEvent.VK_E:
-            d_cameraPos[Y] = 0;
-            break;
-        
-        // Camera Angle
-        case KeyEvent.VK_UP:
-            d_cameraAngle[X] = 0;
-            break;
-        case KeyEvent.VK_DOWN:
-            d_cameraAngle[X] = 0;
-            break;
-        case KeyEvent.VK_LEFT:
-        case KeyEvent.VK_RIGHT:
-            d_cameraAngle[Z] = 0;
-            d_cameraAngle[Y] = 0;
-            break;
-     
-        // Perspective 
-        case KeyEvent.VK_F:
-                d_fov = 0;
-            break;
-        case KeyEvent.VK_R:
-                d_zFar = 0;
-            break;
-        case KeyEvent.VK_T:
-                d_zNear = 0;
-            break;
+	        // Camera Movement
+	        case KeyEvent.VK_A:
+	        case KeyEvent.VK_D:
+	            d_cameraPos[X] = 0;
+	            break;
+	        case KeyEvent.VK_W:
+	        case KeyEvent.VK_S:
+	            d_cameraPos[Z] = 0;
+	            break;
+	        case KeyEvent.VK_Q:
+	        case KeyEvent.VK_E:
+	            d_cameraPos[Y] = 0;
+	            break;
+	        
+	        // Camera Angle
+	        case KeyEvent.VK_UP:
+	            d_cameraAngle[X] = 0;
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            d_cameraAngle[X] = 0;
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        case KeyEvent.VK_RIGHT:
+	            d_cameraAngle[Z] = 0;
+	            d_cameraAngle[Y] = 0;
+	            break;
+	     
+	        // Perspective 
+	        case KeyEvent.VK_F:
+	            d_fov = 0;
+	            break;
+	        case KeyEvent.VK_R:
+	            d_zFar = 0;
+	            break;
+	        case KeyEvent.VK_T:
+	            d_zNear = 0;
+	            break;
         }
         
     }

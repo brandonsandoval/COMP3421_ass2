@@ -233,14 +233,14 @@ public class Terrain {
                 // The two triangles represents 1 grid square
                 double[] n;
                 gl.glBegin(GL2.GL_TRIANGLES);{
-                    //n = MathUtil.normal(p0, p1, p2);
-                    //gl.glNormal3d(n[0], n[1], n[2]);
+                    n = MathUtil.normal(p0, p1, p2);
+                    gl.glNormal3d(n[0], n[1], n[2]);
                     gl.glVertex3dv(p0,0);
                     gl.glVertex3dv(p1,0);
                     gl.glVertex3dv(p2,0);
 
-                    //n = MathUtil.normal(p3, p2, p1);
-                    //gl.glNormal3d(n[0], n[1], n[2]);
+                    n = MathUtil.normal(p3, p2, p1);
+                    gl.glNormal3d(n[0], n[1], n[2]);
                     gl.glVertex3dv(p3,0);
                     gl.glVertex3dv(p2,0);
                     gl.glVertex3dv(p1,0);

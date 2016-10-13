@@ -9,6 +9,7 @@ package ass2.spec;
  ***********************************/
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -53,7 +54,10 @@ public class Game extends JFrame implements GLEventListener {
 
     // Graphics
     private boolean wireframeMode;
-    private int count;
+    
+    // For FPS counter
+    private long timing = 0;
+    private int count = 0;
     
     /************************************
      *           CONSTRUCTOR            *
@@ -64,7 +68,6 @@ public class Game extends JFrame implements GLEventListener {
         this.myTerrain = terrain;
         this.myCamera = new Camera();
         this.wireframeMode = true;
-        this.count = 0;             // just needed temporaily
      }
      
      
@@ -78,7 +81,7 @@ public class Game extends JFrame implements GLEventListener {
         GLCapabilities caps = new GLCapabilities(glp);
         
         // Create Panel and Add Listeners
-        GLJPanel panel = new GLJPanel();
+        GLJPanel panel = new GLJPanel(caps);
         panel.addGLEventListener(this);
         panel.addKeyListener(myCamera);
         panel.addMouseMotionListener(myCamera);
@@ -88,7 +91,7 @@ public class Game extends JFrame implements GLEventListener {
         panel.setFocusable(true);
         
         // Add an animator to call 'display' at 60fps
-        FPSAnimator animator = new FPSAnimator(FPS);
+        FPSAnimator animator = new FPSAnimator(60);
         animator.add(panel);
         animator.start();
         
@@ -103,28 +106,34 @@ public class Game extends JFrame implements GLEventListener {
     }
     
      /************************************
-      *         METHOD (UPDATE)             *
+      *         METHOD (UPDATE)          *
       ***********************************/
     private void update(GL2 gl) {
+    	
+    	// To properly calculate FPS
+        long time = System.currentTimeMillis();
+        double fps = 1 / ((time - timing) / 1000.0);
+        timing = time;
         
         // Prints every second
-        if(count % 60 == 0) {
+        if(count > fps) {
+        	System.out.println("FPS: " + fps);
             System.out.println("Pos: " + myCamera.getPos()[X] + " " + myCamera.getPos()[Y] + " " + myCamera.getPos()[Z]);
             System.out.println("Angle: " + myCamera.getAngle()[X] + " " + myCamera.getAngle()[Y] + " " + myCamera.getAngle()[Z]);
             System.out.println("Orie: " + myCamera.getOrien()[X] + " " + myCamera.getOrien()[Y] + " " + myCamera.getOrien()[Z]);
             System.out.println("Fov: " + myCamera.getFov() + " Near: " + myCamera.getZNear() + " Far: " + myCamera.getZFar());
             System.out.println();
+            count = 0;
         }
         
         myCamera.update();
-        
         
         count++;
     }
     
     
      /************************************
-      *         METHOD (RENDER)             *
+      *         METHOD (RENDER)          *
       ***********************************/
     private void render(GL2 gl) {
         
@@ -149,13 +158,12 @@ public class Game extends JFrame implements GLEventListener {
         myCamera.setView(gl);
         
         // Light Setting
-        /*
         LightProp lp = new LightProp();
         float[] s = myTerrain.getSunlight();
         lp.setProperties(0.1f, 0.5f, 0.1f, 0.2f);
         lp.setPositionAngle(s[0], s[1], s[2]);
         lp.setup(gl);
-        */
+        
 
 
         if(wireframeMode) {
@@ -170,7 +178,7 @@ public class Game extends JFrame implements GLEventListener {
         gl.glColor4f(0, 0, 0, 1);
         myTerrain.drawTerrain(gl);
         
-        /*        
+              
         // Draw all trees
         List<Tree> trees = myTerrain.trees();
         for(Tree tree : trees) {
@@ -181,7 +189,7 @@ public class Game extends JFrame implements GLEventListener {
         for(Road road : roads) {
             road.drawRoad(gl);
         }
-        */
+        
     
         // Needed for Debugging
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
@@ -213,14 +221,14 @@ public class Game extends JFrame implements GLEventListener {
         gl.glEnable(GL2.GL_DEPTH_TEST);
         
         // Set up gl with lighting
-        //gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHTING);
         
         // Normalize vectors1
-        //gl.glEnable(GL2.GL_NORMALIZE);
+        gl.glEnable(GL2.GL_NORMALIZE);
         
         // Cull back faces
         gl.glEnable(GL2.GL_CULL_FACE);
-        //gl.glCullFace(GL2.GL_BACK);
+        gl.glCullFace(GL2.GL_BACK);
         
     }
 
