@@ -61,7 +61,7 @@ public class Game extends JFrame implements GLEventListener {
     private int count = 0;
     
     // An invisible cursor
-    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+    BufferedImage cursorImg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
     Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
         cursorImg, new Point(0, 0), "blank cursor");
     
@@ -99,7 +99,7 @@ public class Game extends JFrame implements GLEventListener {
         getContentPane().add(panel);
         
         // Hide cursor
-        showCursor(false);
+        hideCursor(true);
         
         // Frame Settings
         setSize(WIN_HEIGHT, WIN_WIDTH);
@@ -247,7 +247,7 @@ public class Game extends JFrame implements GLEventListener {
     public void dispose(GLAutoDrawable drawable) {}
 
     
-    public void showCursor(boolean value) {
+    public void hideCursor(boolean value) {
         if(value) {
             getContentPane().setCursor(blankCursor);
         }else {
