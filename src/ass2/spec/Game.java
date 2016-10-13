@@ -165,7 +165,11 @@ public class Game extends JFrame implements GLEventListener {
 		
 		//	Draw Terrain
 		myTerrain.drawTerrain(gl);
-
+		
+    	gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+    	gl.glColor4f(0, 0, 0, 1);
+    	myTerrain.drawTerrain(gl);
+    	
         /*        
 		// Draw all trees
         List<Tree> trees = myTerrain.trees();
