@@ -4,6 +4,10 @@
 package ass2.spec;
 
 
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 /************************************
  *            IMPORTS               *
  ***********************************/
@@ -75,11 +79,10 @@ public class Game extends JFrame implements GLEventListener {
       *         METHOD (RUN)             *
       ***********************************/
     public void run() {
-        
         // Init Profile
         GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
-        
+
         // Create Panel and Add Listeners
         GLJPanel panel = new GLJPanel(caps);
         panel.addGLEventListener(this);
@@ -89,7 +92,6 @@ public class Game extends JFrame implements GLEventListener {
         //panel.addMouseMotionListener(MouseMotionController);
         //panel.addMouseWheelListener(MouseWheelController);
         panel.setFocusable(true);
-        
         // Add an animator to call 'display' at 60fps
         FPSAnimator animator = new FPSAnimator(60);
         animator.add(panel);
@@ -97,6 +99,12 @@ public class Game extends JFrame implements GLEventListener {
         
         // Add Panel to this Frame
         getContentPane().add(panel);
+        
+        // Remove cursor
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            cursorImg, new Point(0, 0), "blank cursor");
+        getContentPane().setCursor(blankCursor);
         
         // Frame Settings
         setSize(WIN_HEIGHT, WIN_WIDTH);
@@ -109,15 +117,15 @@ public class Game extends JFrame implements GLEventListener {
       *         METHOD (UPDATE)          *
       ***********************************/
     private void update(GL2 gl) {
-    	
-    	// To properly calculate FPS
+        
+        // To properly calculate FPS
         long time = System.currentTimeMillis();
         double fps = 1 / ((time - timing) / 1000.0);
         timing = time;
         
         // Prints every second
         if(count > fps) {
-        	System.out.println("FPS: " + fps);
+            System.out.println("FPS: " + fps);
             System.out.println("Pos: " + myCamera.getPos()[X] + " " + myCamera.getPos()[Y] + " " + myCamera.getPos()[Z]);
             System.out.println("Angle: " + myCamera.getAngle()[X] + " " + myCamera.getAngle()[Y] + " " + myCamera.getAngle()[Z]);
             System.out.println("Orie: " + myCamera.getOrien()[X] + " " + myCamera.getOrien()[Y] + " " + myCamera.getOrien()[Z]);

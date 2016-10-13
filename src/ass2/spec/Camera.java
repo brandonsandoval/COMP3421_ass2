@@ -27,40 +27,34 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     private static final double ZNEAR = 1;
     private static final double ZFAR = 300;
     
-    private double[] cameraPos;
-    private double[] cameraAngle;
-    private double[] cameraLookat;
-    private double[] cameraOrientation;
+    private double[] cameraPos = START_POS;
+    private double[] cameraAngle = START_ANGLE;
+    private double[] cameraLookat = START_LOOK;
+    private double[] cameraOrientation = START_ORIEN;
     
     private double[] d_cameraPos;
     private double[] d_cameraAngle;
     
-    private double fov;
-    private double zNear;
-    private double zFar;
+    private double fov = FOV;
+    private double zNear = ZNEAR;
+    private double zFar = ZFAR;
     
-    private double d_fov;
-    private double d_zNear;
-    private double d_zFar;
-    private Point myMousePoint;
+    private double d_fov = 0;
+    private double d_zNear = 0;
+    private double d_zFar = 0;
     private boolean mouseLock = true;
+    
+    // Mouse settings
+    private double m_sensitivity = 2.25;
+    private double m_yaw = 0.022;
+    private double m_pitch = 0.022;
     
     private int height;
     private int width;
-    private static final double mouseSpeed = 1;
-    private double rotX, rotY, rotZ, rotV;
-    private static final int rotVMax = 1;
-    private static final int rotVMin = -1;
     private Robot robot;
-    private int count;
     
     public Camera() {
         System.out.println("Setting up Camera...");
-
-        this.cameraPos = START_POS;
-        this.cameraAngle = START_ANGLE;
-        this.cameraLookat = START_LOOK;
-        this.cameraOrientation = START_ORIEN;
         
         this.d_cameraPos = new double[3];
         this.d_cameraAngle = new double[3];
@@ -68,16 +62,6 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
         System.out.println("Pos: " + cameraPos[X] + " " + cameraPos[Y] + " " + cameraPos[Z]);
         System.out.println("Angle: " + cameraAngle[X] + " " + cameraAngle[Y] + " " + cameraAngle[Z]);
         System.out.println("Orientation: " + cameraOrientation[X] + " " + cameraOrientation[Y] + " " + cameraOrientation[Z]);
-        
-        this.fov = FOV;
-        this.zNear = ZNEAR;
-        this.zFar = ZFAR;
-        
-        this.d_fov = 0;
-        this.d_zNear = 0;
-        this.d_zFar = 0;
-        this.count = 0;
-        
         System.out.println("FOV: " + fov);
         System.out.println("zNear: " + zNear + " zFar: " + zFar);
         
@@ -119,8 +103,7 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
             cameraAngle[X] += d_cameraAngle[X];
         }
         
-        cameraAngle[Y] += (d_cameraAngle[Y] + rotY);
-        
+        cameraAngle[Y] += d_cameraAngle[Y];
         
         //cameraAngle[Z] += d_cameraAngle[Z];
         
@@ -220,43 +203,43 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
 
-	        // Camera Movement
-	        case KeyEvent.VK_A:
-	        case KeyEvent.VK_D:
-	            d_cameraPos[X] = 0;
-	            break;
-	        case KeyEvent.VK_W:
-	        case KeyEvent.VK_S:
-	            d_cameraPos[Z] = 0;
-	            break;
-	        case KeyEvent.VK_Q:
-	        case KeyEvent.VK_E:
-	            d_cameraPos[Y] = 0;
-	            break;
-	        
-	        // Camera Angle
-	        case KeyEvent.VK_UP:
-	            d_cameraAngle[X] = 0;
-	            break;
-	        case KeyEvent.VK_DOWN:
-	            d_cameraAngle[X] = 0;
-	            break;
-	        case KeyEvent.VK_LEFT:
-	        case KeyEvent.VK_RIGHT:
-	            d_cameraAngle[Z] = 0;
-	            d_cameraAngle[Y] = 0;
-	            break;
-	     
-	        // Perspective 
-	        case KeyEvent.VK_F:
-	            d_fov = 0;
-	            break;
-	        case KeyEvent.VK_R:
-	            d_zFar = 0;
-	            break;
-	        case KeyEvent.VK_T:
-	            d_zNear = 0;
-	            break;
+            // Camera Movement
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_D:
+                d_cameraPos[X] = 0;
+                break;
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_S:
+                d_cameraPos[Z] = 0;
+                break;
+            case KeyEvent.VK_Q:
+            case KeyEvent.VK_E:
+                d_cameraPos[Y] = 0;
+                break;
+            
+            // Camera Angle
+            case KeyEvent.VK_UP:
+                d_cameraAngle[X] = 0;
+                break;
+            case KeyEvent.VK_DOWN:
+                d_cameraAngle[X] = 0;
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_RIGHT:
+                d_cameraAngle[Z] = 0;
+                d_cameraAngle[Y] = 0;
+                break;
+         
+            // Perspective 
+            case KeyEvent.VK_F:
+                d_fov = 0;
+                break;
+            case KeyEvent.VK_R:
+                d_zFar = 0;
+                break;
+            case KeyEvent.VK_T:
+                d_zNear = 0;
+                break;
         }
         
     }
@@ -271,31 +254,24 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         
         Point mousePos = e.getPoint();
-        double angleY, angleZ = 0;
-        
+        /*
         System.out.println("W: " + width + " H: " + height);
         System.out.println("W-cent: " + width/2 + " H: " + height/2);
         System.out.println("W-mouse: " + mousePos.x + " H2: " + mousePos.y);
-        
+        */
         if(((mousePos.x == width/2) && (mousePos.y == height/2)) || mouseLock == true) {
             
-            System.out.println("CAMERA LOCKED");
+            //System.out.println("CAMERA LOCKED");
             d_cameraAngle[X] = 0;
             d_cameraAngle[Y] = 0;
             d_cameraAngle[Z] = 0;
             
-        } else if(count %1 == 0) {
-            try {
-                Robot robot = new Robot();
-                robot.mouseMove(width/2, height/2);
-                
-                d_cameraAngle[Y] = (width/2 - mousePos.x)/40;
-                d_cameraAngle[X] = (height/2 - mousePos.y)/40;
-                count++;
-                
-            } catch (Exception err) {}
-            
-            
+        } else {
+            robot.mouseMove(
+                width/2 + (int)e.getComponent().getLocationOnScreen().getX(), 
+                height/2 + (int)e.getComponent().getLocationOnScreen().getY());
+            d_cameraAngle[Y] = (width/2 - mousePos.x) * m_yaw * m_sensitivity;
+            d_cameraAngle[X] = (height/2 - mousePos.y) * m_pitch * m_sensitivity;
         }
 
     }
