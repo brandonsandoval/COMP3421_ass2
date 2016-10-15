@@ -143,7 +143,7 @@ public class Game extends JFrame implements GLEventListener {
         gl.glLoadIdentity();
         
         // Clear Screen and Buffer
-        gl.glClearColor(0, 0, 0, 1); // Black
+        gl.glClearColor(0.5f, 0.75f, 1f, 1); // light-blue sky/background
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         
         // Manually Set Camera
@@ -219,6 +219,9 @@ public class Game extends JFrame implements GLEventListener {
         // Cull back faces
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
+        
+        // Turn on texturing
+        gl.glEnable(GL2.GL_TEXTURE_2D); 
         
     }
 
