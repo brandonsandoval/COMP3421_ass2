@@ -7,8 +7,6 @@ import java.util.List;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
-
-
 /**
  * COMMENT: Comment HeightMap 
  *
@@ -22,6 +20,10 @@ public class Terrain {
     private List<Road> myRoads;
     private float[] mySunlight;
 
+    private String textureFileName = "img/grass01.jpg";
+    private String textureExt = "jpg";
+    private MyTexture myTexture;
+    
     /**
      * Create a new terrain
      *
@@ -198,6 +200,9 @@ public class Terrain {
         double p3[] = {0, 0, 0};
 
         MaterialLightProp.terrainLightProp(gl);
+        myTexture = new MyTexture(gl, textureFileName, textureExt, true);
+        gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+        
         // loop over the altitude grid in myTerrain
         for(int z = 0; z < size().height -1; z++) {
             for(int x = 0; x < size().width -1; x++) {
@@ -231,18 +236,25 @@ public class Terrain {
                 p3[2] = z+1;
               
                 // The two triangles represents 1 grid square
+                gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
                 double[] n;
                 gl.glBegin(GL2.GL_TRIANGLES);{
                     n = MathUtil.normal(p0, p1, p2);
                     gl.glNormal3d(n[0], n[1], n[2]);
+                    gl.glTexCoord2d(0, 0);
                     gl.glVertex3dv(p0,0);
+                    gl.glTexCoord2d(0, 1);
                     gl.glVertex3dv(p1,0);
+                    gl.glTexCoord2d(1, 0);
                     gl.glVertex3dv(p2,0);
 
                     n = MathUtil.normal(p3, p2, p1);
                     gl.glNormal3d(n[0], n[1], n[2]);
+                    gl.glTexCoord2d(1, 1);
                     gl.glVertex3dv(p3,0);
+                    gl.glTexCoord2d(1, 0);
                     gl.glVertex3dv(p2,0);
+                    gl.glTexCoord2d(0, 1);
                     gl.glVertex3dv(p1,0);
                     
                 }gl.glEnd();
