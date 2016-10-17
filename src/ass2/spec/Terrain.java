@@ -199,7 +199,7 @@ public class Terrain {
         double p2[] = {0, 0, 0};
         double p3[] = {0, 0, 0};
 
-        MaterialLightProp.terrainLightProp(gl);
+        //MaterialLightProp.terrainLightProp(gl);
         myTexture = new MyTexture(gl, textureFileName, textureExt, true);
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
         

@@ -4,13 +4,14 @@
 package ass2.spec;
 
 
+/************************************
+ *            IMPORTS               *
+ ***********************************/
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-/************************************
- *            IMPORTS               *
- ***********************************/
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -41,9 +42,9 @@ public class Game extends JFrame implements GLEventListener {
     private static final long serialVersionUID = 1L;
 
     // Misc
-    private static final int X = 0;
-    private static final int Y = 1;
-    private static final int Z = 2;
+    public static final int X = 0;
+    public static final int Y = 1;
+    public static final int Z = 2;
     
     // JFrame / Panel Settings
     private static final int WIN_HEIGHT = 480;
@@ -61,9 +62,9 @@ public class Game extends JFrame implements GLEventListener {
     private int count = 0;
     
     // An invisible cursor
-    BufferedImage cursorImg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-        cursorImg, new Point(0, 0), "blank cursor");
+    BufferedImage cursorImg;
+    Cursor blankCursor;
+    
     
     /************************************
      *           CONSTRUCTOR            *
@@ -72,7 +73,15 @@ public class Game extends JFrame implements GLEventListener {
         super("Assignment 2");
         
         this.myTerrain = terrain;
-        this.myCamera = new Camera();
+        this.myCamera = new Camera(terrain);
+        
+        this.timing = 0;
+        this.count = 0;
+        
+        this.cursorImg = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
+        this.blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
+        		, new Point(0,0), "blank cursor");
+        
      }
      
      
@@ -90,6 +99,7 @@ public class Game extends JFrame implements GLEventListener {
         panel.addKeyListener(myCamera);
         panel.addMouseMotionListener(myCamera);
         panel.setFocusable(true);
+        
         // Add an animator to call 'display' at 60fps
         FPSAnimator animator = new FPSAnimator(60);
         animator.add(panel);
@@ -129,7 +139,7 @@ public class Game extends JFrame implements GLEventListener {
             count = 0;
         }
         count++;
-        myCamera.update();
+        
     }
     
     
@@ -145,15 +155,18 @@ public class Game extends JFrame implements GLEventListener {
         // Clear Screen and Buffer
         gl.glClearColor(0.5f, 0.75f, 1f, 1); // light-blue sky/background
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        
-        // Manually Set Camera
-        /*GLU glu = new GLU();
-        // Position the camera for viewing.
-        glu.gluLookAt(1, 20, 0, 0.0, 0, 0.0, 0.0, 1.0, 0.0);*/
 
         // Setup Camera
-        myCamera.setView(gl);
-        
+        if(!Camera.thirdPerson) {
+            gl.glRotated(90, 0, 1, 0);
+            myCamera.setView(gl);
+            myCamera.update();
+        } else {
+        	myCamera.setView(gl);
+        	myCamera.draw(gl);
+        	myCamera.update();
+        }
+
         // Light Setting
         LightProp lp = new LightProp();
         float[] s = myTerrain.getSunlight();
@@ -161,28 +174,59 @@ public class Game extends JFrame implements GLEventListener {
         lp.setPositionAngle(s[0], s[1], s[2]);
         lp.setup(gl);
         
-        // Draw Terrain
+        //	Draws X, Y, Z but only without Lights
+        //drawCoor(gl);
+        
+        //	Wireframe Mode
+        //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+        //gl.glColor3d(1,1,0);
+        //gl.glLineWidth(1);
         myTerrain.drawTerrain(gl);
         
-        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
-        gl.glColor4f(0, 0, 0, 1);
-        myTerrain.drawTerrain(gl);
-        
-              
         // Draw all trees
         List<Tree> trees = myTerrain.trees();
         for(Tree tree : trees) {
             tree.drawTree(gl);
         }
+        
         // Draw all roads
         List<Road> roads = myTerrain.roads();
         for(Road road : roads) {
             road.drawRoad(gl);
         }
         
-    
         // Needed for Debugging
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        
+    }
+    
+    //	Drawing X, Y, Z (COLORS ONLY works with NO LIGHTING)
+    public void drawCoor(GL2 gl) {
+    	//gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINES);
+    	gl.glLineWidth(10);
+    	gl.glBegin(GL2.GL_LINES); {
+    		//	X (RED)
+    		gl.glColor3d(1, 0, 0);
+    		gl.glVertex3d(140,140,128);
+    		gl.glVertex3d(128,140,128);
+    	
+    	} gl.glEnd();
+    	
+    	gl.glBegin(GL2.GL_LINES); {
+    		//	Y (GREEN)
+    		gl.glColor3d(0, 1, 0);
+    		gl.glVertex3d(128,152,128);
+    		gl.glVertex3d(128,140,128);
+    	
+    	} gl.glEnd();
+    	
+    	gl.glBegin(GL2.GL_LINES); {
+    		//	Z (BLUE)
+    		gl.glColor3d(0, 0, 1);
+    		gl.glVertex3d(128,140,140);
+    		gl.glVertex3d(128,140,128);
+    	
+    	} gl.glEnd();
     }
 
      
@@ -239,8 +283,9 @@ public class Game extends JFrame implements GLEventListener {
         
         // Using a perspective camera
         GLU glu = new GLU();
+        
+        //	Probably should change this later..
         myCamera.setSize(height, width);    // Need to give camera window size as argument
-
 
         glu.gluPerspective(myCamera.getFov(), (float)width/(float)height, myCamera.getZNear(), myCamera.getZFar());
 
