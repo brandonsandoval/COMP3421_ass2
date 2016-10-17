@@ -22,7 +22,7 @@ public class Terrain {
 
     private String textureFileName = "img/grass01.jpg";
     private String textureExt = "jpg";
-    private MyTexture myTexture;
+    private MyTexture myTexture = null;
     
     /**
      * Create a new terrain
@@ -186,7 +186,16 @@ public class Terrain {
         Road road = new Road(width, spine);
         myRoads.add(road);        
     }
-
+    
+    /**
+     * Initial setup for texturing
+     * @param gl
+     */
+    public void loadTerrain(GL2 gl) {
+        if(myTexture == null) {
+            myTexture = new MyTexture(gl, textureFileName, textureExt, true);
+        }
+    }
 
     /**
      * Draws the terrain
@@ -199,9 +208,10 @@ public class Terrain {
         double p2[] = {0, 0, 0};
         double p3[] = {0, 0, 0};
 
+        // Set lighting and texturing
         MaterialLightProp.terrainLightProp(gl);
-        myTexture = new MyTexture(gl, textureFileName, textureExt, true);
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
         
         // loop over the altitude grid in myTerrain
         for(int z = 0; z < size().height -1; z++) {
@@ -236,7 +246,6 @@ public class Terrain {
                 p3[2] = z+1;
               
                 // The two triangles represents 1 grid square
-                gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
                 double[] n;
                 gl.glBegin(GL2.GL_TRIANGLES);{
                     n = MathUtil.normal(p0, p1, p2);
