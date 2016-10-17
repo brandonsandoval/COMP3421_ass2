@@ -45,7 +45,7 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
 	private static final double[] START_LOOK = {0,0,0};
 	private static final double[] START_ORIEN = {0,0,0};
 	private static final double START_FOV = 80;
-	private static final double START_ZNEAR = 1;
+	private static final double START_ZNEAR = 0.01;
 	private static final double START_ZFAR = 300;
 
 	//	Do not change this value, ASCII[0-255]
@@ -100,7 +100,7 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
 		this.thirdPerson = false;
 		this.view_distance = 3;
 		this.myTerrain = myTerrain;
-		this.gravity = false;
+		this.gravity = true;
 		this.collision = false;
 		
 		try {
@@ -131,14 +131,14 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
 	
 	public void update() {
 		if(collision) {
-			double altitude = myTerrain.getGridAltitude((int)Math.round(cameraPos[Game.X]), (int)Math.round(cameraPos[Game.Z]));
+			double altitude = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]);
 			if(cameraPos[Game.Y] <= altitude) {
 				cameraPos[Game.Y] = altitude+0.5;
 			}
 		}
 		
 		if(gravity) {
-			cameraPos[Game.Y] = myTerrain.getGridAltitude((int)Math.round(cameraPos[Game.X]), (int)Math.round(cameraPos[Game.Z])) + 2;
+			cameraPos[Game.Y] = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]) + 2;
 		}
 	
 	}
