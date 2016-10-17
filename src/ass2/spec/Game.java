@@ -266,6 +266,7 @@ public class Game extends JFrame implements GLEventListener {
         
         // Turn on texturing
         gl.glEnable(GL2.GL_TEXTURE_2D); 
+        myTerrain.loadTerrain(gl);
         
     }
 
