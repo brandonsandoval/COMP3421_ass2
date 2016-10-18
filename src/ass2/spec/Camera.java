@@ -101,10 +101,11 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
 		this.view_distance = 3;
 		this.myTerrain = myTerrain;
 		this.gravity = true;
-		this.collision = false;
+		this.collision = true;
 		
 		try {
 			this.mouseRobot = new Robot();
+			mouseRobot.setAutoDelay(16);
 		} catch (Exception e) {}
 
 	}
