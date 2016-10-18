@@ -186,14 +186,15 @@ public class Terrain {
         Road road = new Road(width, spine);
         myRoads.add(road);        
     }
-    
+
     /**
      * Initial setup for texturing
      * @param gl
+     * @param mipmaps
      */
-    public void loadTerrain(GL2 gl) {
+    public void loadTerrain(GL2 gl, boolean mipmaps) {
         if(myTexture == null) {
-            myTexture = new MyTexture(gl, textureFileName, textureExt, true);
+            myTexture = new MyTexture(gl, textureFileName, textureExt, mipmaps);
         }
     }
 

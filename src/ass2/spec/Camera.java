@@ -40,6 +40,7 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
      *            FIELDS                *
      ***********************************/
     // Static Fields
+    //private static final double[] START_POS = {0, 0, 0};
     private static final double[] START_POS = {128, 140, 128};
     private static final double[] START_ANGLE = {0,0,0};
     private static final double[] START_LOOK = {0,0,0};

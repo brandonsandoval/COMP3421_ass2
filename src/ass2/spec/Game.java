@@ -265,8 +265,12 @@ public class Game extends JFrame implements GLEventListener {
         gl.glCullFace(GL2.GL_BACK);
         
         // Turn on texturing
-        gl.glEnable(GL2.GL_TEXTURE_2D); 
-        myTerrain.loadTerrain(gl);
+        gl.glEnable(GL2.GL_TEXTURE_2D);
+        myTerrain.loadTerrain(gl, true);
+        List<Tree> trees = myTerrain.trees();
+        for(Tree tree : trees) {
+            tree.loadTexture(gl, true);
+        }
         
     }
 
