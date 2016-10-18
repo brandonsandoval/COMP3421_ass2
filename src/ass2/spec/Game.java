@@ -80,7 +80,7 @@ public class Game extends JFrame implements GLEventListener {
         
         this.cursorImg = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
         this.blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
-        		, new Point(0,0), "blank cursor");
+                , new Point(0,0), "blank cursor");
         
      }
      
@@ -162,9 +162,9 @@ public class Game extends JFrame implements GLEventListener {
             myCamera.setView(gl);
             myCamera.update();
         } else {
-        	myCamera.setView(gl);
-        	myCamera.draw(gl);
-        	myCamera.update();
+            myCamera.setView(gl);
+            myCamera.draw(gl);
+            myCamera.update();
         }
 
         // Light Setting
@@ -174,10 +174,10 @@ public class Game extends JFrame implements GLEventListener {
         lp.setPositionAngle(s[0], s[1], s[2]);
         lp.setup(gl);
         
-        //	Draws X, Y, Z but only without Lights
+        // Draws X, Y, Z but only without Lights
         //drawCoor(gl);
         
-        //	Wireframe Mode
+        // Wireframe Mode
         //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
         //gl.glColor3d(1,1,0);
         //gl.glLineWidth(1);
@@ -200,33 +200,33 @@ public class Game extends JFrame implements GLEventListener {
         
     }
     
-    //	Drawing X, Y, Z (COLORS ONLY works with NO LIGHTING)
+    // Drawing X, Y, Z (COLORS ONLY works with NO LIGHTING)
     public void drawCoor(GL2 gl) {
-    	//gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINES);
-    	gl.glLineWidth(10);
-    	gl.glBegin(GL2.GL_LINES); {
-    		//	X (RED)
-    		gl.glColor3d(1, 0, 0);
-    		gl.glVertex3d(140,140,128);
-    		gl.glVertex3d(128,140,128);
-    	
-    	} gl.glEnd();
-    	
-    	gl.glBegin(GL2.GL_LINES); {
-    		//	Y (GREEN)
-    		gl.glColor3d(0, 1, 0);
-    		gl.glVertex3d(128,152,128);
-    		gl.glVertex3d(128,140,128);
-    	
-    	} gl.glEnd();
-    	
-    	gl.glBegin(GL2.GL_LINES); {
-    		//	Z (BLUE)
-    		gl.glColor3d(0, 0, 1);
-    		gl.glVertex3d(128,140,140);
-    		gl.glVertex3d(128,140,128);
-    	
-    	} gl.glEnd();
+        //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINES);
+        gl.glLineWidth(10);
+        gl.glBegin(GL2.GL_LINES); {
+            // X (RED)
+            gl.glColor3d(1, 0, 0);
+            gl.glVertex3d(140,140,128);
+            gl.glVertex3d(128,140,128);
+        
+        } gl.glEnd();
+        
+        gl.glBegin(GL2.GL_LINES); {
+            // Y (GREEN)
+            gl.glColor3d(0, 1, 0);
+            gl.glVertex3d(128,152,128);
+            gl.glVertex3d(128,140,128);
+        
+        } gl.glEnd();
+        
+        gl.glBegin(GL2.GL_LINES); {
+            // Z (BLUE)
+            gl.glColor3d(0, 0, 1);
+            gl.glVertex3d(128,140,140);
+            gl.glVertex3d(128,140,128);
+        
+        } gl.glEnd();
     }
 
      
@@ -285,7 +285,7 @@ public class Game extends JFrame implements GLEventListener {
         // Using a perspective camera
         GLU glu = new GLU();
         
-        //	Probably should change this later..
+        // Probably should change this later..
         myCamera.setSize(height, width);    // Need to give camera window size as argument
 
         glu.gluPerspective(myCamera.getFov(), (float)width/(float)height, myCamera.getZNear(), myCamera.getZFar());
