@@ -40,8 +40,6 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
      *            FIELDS                *
      ***********************************/
     // Static Fields
-    //private static final double[] START_POS = {0, 0, 0};
-    private static final double[] START_POS = {128, 140, 128};
     private static final double[] START_ANGLE = {0,0,0};
     private static final double[] START_LOOK = {0,0,0};
     private static final double[] START_ORIEN = {0,0,0};
@@ -85,7 +83,11 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
         System.out.println("Setting up Camera");
 
         // Camera
-        this.cameraPos = START_POS;
+        System.out.println(myTerrain.size().width+","+myTerrain.size().height);
+        this.cameraPos = new double[3];
+        this.cameraPos[Game.X] = myTerrain.size().width / 2;
+        this.cameraPos[Game.Y] = 0;
+        this.cameraPos[Game.Z] = myTerrain.size().height / 2;
         this.cameraAngle = START_ANGLE;
         this.cameraLook = START_LOOK;
         this.cameraOrien = START_ORIEN;
