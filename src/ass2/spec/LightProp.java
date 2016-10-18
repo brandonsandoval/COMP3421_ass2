@@ -1,7 +1,6 @@
 package ass2.spec;
 
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * Sets up the Ambient, Diffuse, Specular and Global ambient as well as the

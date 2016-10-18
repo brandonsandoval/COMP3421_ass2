@@ -57,13 +57,17 @@ public class Game extends JFrame implements GLEventListener {
     // Camera
     private Camera myCamera;
     
+    // Mouse and Keyboard listeners
+    private MouseController myMouse;
+    private KeyboardController myKeyboard;
+    
     // For FPS counter
     private long timing = 0;
     private int count = 0;
     
     // An invisible cursor
     BufferedImage cursorImg;
-    Cursor blankCursor;
+    static Cursor blankCursor;
     
     
     /************************************
@@ -75,11 +79,14 @@ public class Game extends JFrame implements GLEventListener {
         this.myTerrain = terrain;
         this.myCamera = new Camera(terrain);
         
+        this.myMouse = new MouseController();
+        this.myKeyboard = new KeyboardController();
+        
         this.timing = 0;
         this.count = 0;
         
         this.cursorImg = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
-        this.blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
+        blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
                 , new Point(0,0), "blank cursor");
         
      }
@@ -96,8 +103,9 @@ public class Game extends JFrame implements GLEventListener {
         // Create Panel and Add Listeners
         GLJPanel panel = new GLJPanel(caps);
         panel.addGLEventListener(this);
-        panel.addKeyListener(myCamera);
-        panel.addMouseMotionListener(myCamera);
+        panel.addKeyListener(myKeyboard);
+        panel.addMouseListener(myMouse);
+        panel.addMouseMotionListener(myMouse);
         panel.setFocusable(true);
         
         // Add an animator to call 'display' at 60fps
@@ -109,7 +117,7 @@ public class Game extends JFrame implements GLEventListener {
         getContentPane().add(panel);
         
         // Hide cursor
-        hideCursor(true);
+        getContentPane().setCursor(blankCursor);
         
         // Frame Settings
         setSize(WIN_HEIGHT, WIN_WIDTH);
@@ -131,10 +139,10 @@ public class Game extends JFrame implements GLEventListener {
         // Prints every second
         if(count > fps) {
             System.out.println("FPS: " + fps);
-            System.out.println("Pos: " + myCamera.getPos()[X] + " " + myCamera.getPos()[Y] + " " + myCamera.getPos()[Z]);
-            System.out.println("Angle: " + myCamera.getAngle()[X] + " " + myCamera.getAngle()[Y] + " " + myCamera.getAngle()[Z]);
-            System.out.println("Orie: " + myCamera.getOrien()[X] + " " + myCamera.getOrien()[Y] + " " + myCamera.getOrien()[Z]);
-            System.out.println("Fov: " + myCamera.getFov() + " Near: " + myCamera.getZNear() + " Far: " + myCamera.getZFar());
+            System.out.println("Pos: " + Camera.getPos()[X] + " " + Camera.getPos()[Y] + " " + Camera.getPos()[Z]);
+            System.out.println("Angle: " + Camera.getAngle()[X] + " " + Camera.getAngle()[Y] + " " + Camera.getAngle()[Z]);
+            System.out.println("Orie: " + Camera.getOrien()[X] + " " + Camera.getOrien()[Y] + " " + Camera.getOrien()[Z]);
+            System.out.println("Fov: " + Camera.getFov() + " Near: " + Camera.getZNear() + " Far: " + Camera.getZFar());
             System.out.println();
             count = 0;
         }
@@ -157,7 +165,7 @@ public class Game extends JFrame implements GLEventListener {
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         // Setup Camera
-        if(!Camera.thirdPerson) {
+        if(!Camera.getThirdPerson()) {
             gl.glRotated(90, 0, 1, 0);
             myCamera.setView(gl);
             myCamera.update();
@@ -290,24 +298,15 @@ public class Game extends JFrame implements GLEventListener {
         GLU glu = new GLU();
         
         // Probably should change this later..
-        myCamera.setSize(height, width);    // Need to give camera window size as argument
+        MouseController.setSize(height, width); // Need to give mouseController window size
 
-        glu.gluPerspective(myCamera.getFov(), (float)width/(float)height, myCamera.getZNear(), myCamera.getZFar());
+        glu.gluPerspective(Camera.getFov(), (float)width/(float)height, Camera.getZNear(), Camera.getZFar());
 
     }
     
     @Override
     public void dispose(GLAutoDrawable drawable) {}
 
-    
-    public void hideCursor(boolean value) {
-        if(value) {
-            getContentPane().setCursor(blankCursor);
-        }else {
-            // Restore default cursor
-            getContentPane().setCursor(null);
-        }
-    }
     
     /************************************
      *              MAIN        
@@ -320,5 +319,9 @@ public class Game extends JFrame implements GLEventListener {
         Game game = new Game(terrain);
         game.run();
     }
+
+    // Gets
+    public static int getWIN_WIDTH(){ return WIN_WIDTH; }
+    public static int getWIN_HEIGHT(){ return WIN_HEIGHT; }
 
 }

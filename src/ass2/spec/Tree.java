@@ -1,9 +1,6 @@
 package ass2.spec;
 
-import java.util.List;
-
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * COMMENT: Comment Tree 
@@ -82,7 +79,6 @@ public class Tree {
     
     public void drawTree(GL2 gl) {
 
-        GLUT glut = new GLUT();
         double[] t = getPosition();
 
         // DRAW THE HEAD OF TREE
@@ -157,26 +153,25 @@ public class Tree {
            
             for(int i = 0; i < SLICES_TREE; i++)
             {
-                double angle0 = i*angleIncrement;
+                double angle = i*angleIncrement;
             
                 gl.glNormal3d(0.0, 0.0, 1);
-                gl.glVertex3d(Math.cos(angle0)*thickness, Math.sin(angle0)*thickness, top);
+                gl.glVertex3d(Math.cos(angle)*thickness, Math.sin(angle)*thickness, top);
             }
             }gl.glEnd();
           
             gl.glBegin(GL2.GL_QUAD_STRIP);{
                 for(int i=0; i<= SLICES_TREE; i++){
-                    double angle0 = i*angleIncrement;
-                    double angle1 = (i+1)*angleIncrement;
-                    double xPos0 = Math.cos(angle0)*thickness;
-                    double yPos0 = Math.sin(angle0)*thickness;
+                    double angle = i*angleIncrement;
+                    double xPos = Math.cos(angle)*thickness;
+                    double yPos = Math.sin(angle)*thickness;
                     double sCoord = 1.0/SLICES_TREE * i;
                     
-                    gl.glNormal3d(xPos0, yPos0, 0);
+                    gl.glNormal3d(xPos, yPos, 0);
                     gl.glTexCoord2d(sCoord,1);
-                    gl.glVertex3d(xPos0,yPos0,top);
+                    gl.glVertex3d(xPos,yPos,top);
                     gl.glTexCoord2d(sCoord,0);
-                    gl.glVertex3d(xPos0,yPos0,bottom);
+                    gl.glVertex3d(xPos,yPos,bottom);
                     
                 }
             }gl.glEnd();
@@ -186,9 +181,9 @@ public class Tree {
                
                 for(int i = 0; i < SLICES_TREE; i++)
                 {
-                    double angle0 = -i*angleIncrement;
+                    double angle = -i*angleIncrement;
                     gl.glNormal3d(0.0, 0.0, -1);
-                    gl.glVertex3d(Math.cos(angle0)*thickness, Math.sin(angle0)*thickness,bottom);
+                    gl.glVertex3d(Math.cos(angle)*thickness, Math.sin(angle)*thickness,bottom);
                 }
             }gl.glEnd();
         }gl.glPopMatrix();

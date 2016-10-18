@@ -7,18 +7,9 @@ package ass2.spec;
 /************************************
  *            IMPORTS               *
  ***********************************/
-import java.awt.Point;
-import java.awt.Robot;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 // TODO: CLEAN CODE (will do later)
 
@@ -34,7 +25,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 /**************************************************
  *                  CAMERA                
  **************************************************/
-public class Camera implements KeyListener, MouseListener, MouseMotionListener {
+public class Camera {
     
     /************************************
      *            FIELDS                *
@@ -47,70 +38,49 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     private static final double START_ZNEAR = 0.01;
     private static final double START_ZFAR = 300;
 
-    // Do not change this value, ASCII[0-255]
-    private static final int ASCII_SIZE = 256;
-    private static final double MOUSE_SENSITIVITY = 0.1;
-
     // Camera Settings
-    private double[] cameraPos;
-    private double[] cameraAngle;
-    private double[] cameraLook;
-    private double[] cameraOrien;
-    private double fov;
-    private double zNear;
-    private double zFar;
+    private static double[] cameraPos;
+    private static double[] cameraAngle;
+    private static double[] cameraLook;
+    private static double[] cameraOrien;
+    private static double fov;
+    private static double zNear;
+    private static double zFar;
 
     // Input Settings
-    private boolean[] input;
-    private Robot mouseRobot;
-    private double m_sensitivity;
-    private boolean mouseLock;
-    private double view_distance;
+    private static boolean mouseLock;
+    private static double view_distance;
     
     // Mode Settings
-    static public boolean thirdPerson;
-    private boolean collision;
-    private boolean gravity;
+    private static boolean thirdPerson;
+    private static boolean collision;
+    private static boolean gravity;
     
-    private Terrain myTerrain;
-    private int height;
-    private int width;
-
+    private static Terrain myTerrain;
 
     // Constructor
     public Camera(Terrain myTerrain) {
+        Camera.myTerrain = myTerrain;
         
         System.out.println("Setting up Camera");
-
         // Camera
         System.out.println(myTerrain.size().width+","+myTerrain.size().height);
-        this.cameraPos = new double[3];
-        this.cameraPos[Game.X] = myTerrain.size().width / 2;
-        this.cameraPos[Game.Y] = 0;
-        this.cameraPos[Game.Z] = myTerrain.size().height / 2;
-        this.cameraAngle = START_ANGLE;
-        this.cameraLook = START_LOOK;
-        this.cameraOrien = START_ORIEN;
-        this.fov = START_FOV;
-        this.zNear = START_ZNEAR;
-        this.zFar = START_ZFAR;
+        cameraPos = new double[3];
+        cameraPos[Game.X] = myTerrain.size().width / 2;
+        cameraPos[Game.Y] = 0;
+        cameraPos[Game.Z] = myTerrain.size().height / 2;
+        cameraAngle = START_ANGLE;
+        cameraLook = START_LOOK;
+        cameraOrien = START_ORIEN;
+        fov = START_FOV;
+        zNear = START_ZNEAR;
+        zFar = START_ZFAR;
 
-        // Mouse
-        this.m_sensitivity = MOUSE_SENSITIVITY;
+        mouseLock = false;
+        view_distance = 3;
+        gravity = true;
+        collision = true;
         
-        this.input = new boolean[ASCII_SIZE];
-        this.mouseLock = false;
-        this.thirdPerson = false;
-        this.view_distance = 3;
-        this.myTerrain = myTerrain;
-        this.gravity = true;
-        this.collision = true;
-        
-        try {
-            this.mouseRobot = new Robot();
-            mouseRobot.setAutoDelay(16);
-        } catch (Exception e) {}
-
     }
     
     public void setView(GL2 gl) {
@@ -147,167 +117,6 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     
     }
 
-    public void keyPressed(KeyEvent e) {
-        
-        input[e.getKeyCode()] = true;
-
-        if(!thirdPerson) {
-            // WSAD [MOVEMENT]
-            if(input[KeyEvent.VK_W]) {
-                cameraPos[Game.X] += Math.cos(Math.toRadians(cameraAngle[Game.Y])) * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Y] += Math.sin(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Z] -= Math.sin(Math.toRadians(cameraAngle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_S]) {
-                cameraPos[Game.X] -= Math.cos(Math.toRadians(cameraAngle[Game.Y])) * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Y] -= Math.sin(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Z] += Math.sin(Math.toRadians(cameraAngle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_A]) {
-                cameraPos[Game.X] += Math.cos(Math.toRadians(cameraAngle[Game.Y]+90));// * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Z] -= Math.sin(Math.toRadians(cameraAngle[Game.Y]+90));
-            }
-            if(input[KeyEvent.VK_D]) {
-                cameraPos[Game.X] -= Math.cos(Math.toRadians(cameraAngle[Game.Y]+90));// * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Z] += Math.sin(Math.toRadians(cameraAngle[Game.Y]+90));
-            }
-        } else {
-            if(input[KeyEvent.VK_W]) {
-                cameraPos[Game.X] += Math.cos(Math.toRadians(cameraAngle[Game.Y])) * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Y] += Math.sin(Math.toRadians(cameraAngle[Game.Z]+45));
-                cameraPos[Game.Z] -= Math.sin(Math.toRadians(cameraAngle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_S]) {
-                cameraPos[Game.X] -= Math.cos(Math.toRadians(cameraAngle[Game.Y])) * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Y] -= Math.sin(Math.toRadians(cameraAngle[Game.Z]+45));
-                cameraPos[Game.Z] += Math.sin(Math.toRadians(cameraAngle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_A]) {
-                cameraPos[Game.X] += Math.cos(Math.toRadians(cameraAngle[Game.Y]+90));
-                cameraPos[Game.Z] -= Math.sin(Math.toRadians(cameraAngle[Game.Y]+90));
-            }
-            if(input[KeyEvent.VK_D]) {
-                cameraPos[Game.X] -= Math.cos(Math.toRadians(cameraAngle[Game.Y]+90));// * Math.cos(Math.toRadians(cameraAngle[Game.Z]));
-                cameraPos[Game.Z] += Math.sin(Math.toRadians(cameraAngle[Game.Y]+90));
-            }
-        }
-        // QE [ALTITUDE]
-        if(input[KeyEvent.VK_SPACE]) {
-            cameraPos[Game.Y] += 1;
-        }
-        if(input[KeyEvent.VK_SHIFT]) {
-            cameraPos[Game.Y] -= 1;
-        }
-
-        // ARROW KEYS [ROTATE] - only used for testing
-        if(input[KeyEvent.VK_UP]) {
-            cameraAngle[Game.Z] += 1;
-        }
-        if(input[KeyEvent.VK_DOWN]) {
-            cameraAngle[Game.Z] -= 1;
-        }
-        if(input[KeyEvent.VK_LEFT]) {
-            cameraAngle[Game.Y] += 1;
-        }
-        if(input[KeyEvent.VK_RIGHT]) {
-            cameraAngle[Game.Y] -= 1;
-        }
-
-        // OTHER
-        if(input[KeyEvent.VK_T]) {
-            mouseLock = !mouseLock;
-        }
-        if(input[KeyEvent.VK_V]) {
-            thirdPerson = !thirdPerson;
-            if(thirdPerson) {
-                cameraAngle[Game.X] = 0;
-                cameraAngle[Game.Y] = 0;
-                cameraAngle[Game.Z] = -45;
-            } else {
-                cameraAngle[Game.X] = 0;
-                cameraAngle[Game.Y] = 0;
-                cameraAngle[Game.Z] = 0;
-            }
-        }
-        if(input[KeyEvent.VK_G]) {
-            gravity = !gravity;
-            System.out.println("GRAVITY:" + gravity);
-        }
-        if(input[KeyEvent.VK_C]) {
-            collision = !collision;
-            System.out.println("COLLISION:" + collision);
-        }
-
-    }
-    
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // Something goes wrong here with error message but nothing actually happens..
-        input[e.getKeyCode()] = false;
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {}
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        Point mousePos = e.getPoint();
-
-        if(((mousePos.x == width/2) && (mousePos.y == height/2))
-                || (mouseLock == false)) {
-            
-        } else {
-            mouseRobot.mouseMove(width/2 + (int)e.getComponent().getLocationOnScreen().getX(), 
-                height/2 + (int)e.getComponent().getLocationOnScreen().getY());
-            
-            cameraAngle[Game.Y] += (width/2 - mousePos.x) * m_sensitivity;
-            
-            // Prevent camera 'bobbing' past 90 deg
-            if((cameraAngle[Game.Z] + (height/2 - mousePos.y) * m_sensitivity) >= -90 && 
-               (cameraAngle[Game.Z] + (height/2 - mousePos.y) * m_sensitivity) <= 90) {
-                cameraAngle[Game.Z] += (height/2 - mousePos.y) * m_sensitivity;
-            } else if(cameraAngle[Game.Z] > 90) {
-                cameraAngle[Game.Z] = 89.9;
-            } else if(cameraAngle[Game.Z] < -90) {
-                cameraAngle[Game.Z] = -89.9;
-            }
-        }
-        
-    }
-
-    public void setSize(int height, int width) {
-        this.height = height;
-        this.width = width;
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mousePressed(MouseEvent e) {    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
-    
-    // Gets
-    public double[] getPos() {return this.cameraPos;}
-    public double[] getAngle() {return this.cameraAngle;}
-    public double[] getLook() {return this.cameraLook;}
-    public double[] getOrien() {return this.cameraOrien;}
-    public double getFov() {return this.fov;}
-    public double getZNear() {return this.zNear;}
-    public double getZFar() {return this.zFar;}
-
-    
     // Draw Cube
     public void draw(GL2 gl) {
         
@@ -355,4 +164,24 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
             gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]);
           } gl.glEnd();
     }
+    
+    // Gets
+    public static double[] getPos() {return cameraPos;}
+    public static double[] getAngle() {return cameraAngle;}
+    public static double[] getLook() {return cameraLook;}
+    public static double[] getOrien() {return cameraOrien;}
+    public static double getFov() {return fov;}
+    public static double getZNear() {return zNear;}
+    public static double getZFar() {return zFar;}
+    public static boolean getThirdPerson() {return thirdPerson;}
+    public static boolean getMouseLock() {return mouseLock;}
+    public static boolean getGravity() {return gravity;}
+    public static boolean getCollision() {return collision;}
+    
+    // Sets
+    public static void setThirdPerson(boolean v) {thirdPerson = v;}
+    public static void setMouseLock(boolean v) {mouseLock = v;}
+    public static void setGravity(boolean v) {gravity = v;}
+    public static void setCollision(boolean v) {collision = v;}
+    
 }
