@@ -259,7 +259,10 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
                 height/2 + (int)e.getComponent().getLocationOnScreen().getY());
             
             cameraAngle[Game.Y] += (width/2 - mousePos.x) * m_sensitivity;
-            if(cameraAngle[Game.Z] > -90 && cameraAngle[Game.Z] < 90) {
+            
+            // Prevent camera 'bobbing' past 90 deg
+            if((cameraAngle[Game.Z] + (height/2 - mousePos.y) * m_sensitivity) >= -90 && 
+               (cameraAngle[Game.Z] + (height/2 - mousePos.y) * m_sensitivity) <= 90) {
                 cameraAngle[Game.Z] += (height/2 - mousePos.y) * m_sensitivity;
             } else if(cameraAngle[Game.Z] > 90) {
                 cameraAngle[Game.Z] = 89.9;
@@ -305,7 +308,6 @@ public class Camera implements KeyListener, MouseListener, MouseMotionListener {
     
     // Draw Cube
     public void draw(GL2 gl) {
-        System.out.println("DRAWING...");
         
           gl.glBegin(GL2.GL_QUADS); {
             // front   
