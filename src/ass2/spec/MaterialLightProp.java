@@ -22,7 +22,7 @@ public class MaterialLightProp {
     }
     
     public static void treeHeadLightProp(GL2 gl) {
-        matAmbAndDif = new float[]{0.00f, 0.40f, 0.00f, 1.0f};
+        matAmbAndDif = new float[]{0.50f, 1.00f, 0.50f, 1.0f};
         matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
         matShine = new float[]{50.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
