@@ -20,7 +20,7 @@ public class MouseController implements MouseListener, MouseMotionListener {
         m_sensitivity = MOUSE_SENSITIVITY;
         try {
             mouseRobot = new Robot();
-            mouseRobot.setAutoDelay(16);
+            //mouseRobot.setAutoDelay(16);
         } catch (Exception e) {}
         width = Game.getWIN_WIDTH();
         height = Game.getWIN_HEIGHT();

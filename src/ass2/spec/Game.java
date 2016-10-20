@@ -48,7 +48,7 @@ public class Game extends JFrame implements GLEventListener {
     
     // JFrame / Panel Settings
     private static final int WIN_HEIGHT = 480;
-    private static final int WIN_WIDTH = 480;
+    private static final int WIN_WIDTH = 640;
     private static final int FPS = 60;
     
     // Terrain
@@ -120,7 +120,7 @@ public class Game extends JFrame implements GLEventListener {
         getContentPane().setCursor(blankCursor);
         
         // Frame Settings
-        setSize(WIN_HEIGHT, WIN_WIDTH);
+        setSize(WIN_WIDTH, WIN_HEIGHT);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);     
         
@@ -183,13 +183,14 @@ public class Game extends JFrame implements GLEventListener {
         lp.setup(gl);
         
         // Draws X, Y, Z but only without Lights
-        //drawCoor(gl);
+        drawCoor(gl, 128, 140, 128);
         
         // Wireframe Mode
         //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
         //gl.glColor3d(1,1,0);
         //gl.glLineWidth(1);
-        myTerrain.drawTerrain(gl);
+        myTerrain.drawVBOTerrain(gl);
+        //myTerrain.drawTerrain(gl);
         
         // Draw all trees
         List<Tree> trees = myTerrain.trees();
@@ -208,31 +209,32 @@ public class Game extends JFrame implements GLEventListener {
         
     }
     
-    // Drawing X, Y, Z (COLORS ONLY works with NO LIGHTING)
-    public void drawCoor(GL2 gl) {
+    // Drawing X, Y, Z
+    public void drawCoor(GL2 gl, double x, double y, double z) {
+    	double length = 12;
         //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINES);
         gl.glLineWidth(10);
         gl.glBegin(GL2.GL_LINES); {
             // X (RED)
-            gl.glColor3d(1, 0, 0);
-            gl.glVertex3d(140,140,128);
-            gl.glVertex3d(128,140,128);
+        	MaterialLightProp.redLightProp(gl);
+            gl.glVertex3d(x+length, y, z);
+            gl.glVertex3d(x, y, z);
         
         } gl.glEnd();
         
         gl.glBegin(GL2.GL_LINES); {
             // Y (GREEN)
-            gl.glColor3d(0, 1, 0);
-            gl.glVertex3d(128,152,128);
-            gl.glVertex3d(128,140,128);
+        	MaterialLightProp.greenLightProp(gl);
+            gl.glVertex3d(x, y+length, z);
+            gl.glVertex3d(x, y, z);
         
         } gl.glEnd();
         
         gl.glBegin(GL2.GL_LINES); {
             // Z (BLUE)
-            gl.glColor3d(0, 0, 1);
-            gl.glVertex3d(128,140,140);
-            gl.glVertex3d(128,140,128);
+        	MaterialLightProp.blueLightProp(gl);
+            gl.glVertex3d(x, y, z+length);
+            gl.glVertex3d(x, y, z);
         
         } gl.glEnd();
     }
@@ -280,6 +282,8 @@ public class Game extends JFrame implements GLEventListener {
             tree.loadTexture(gl, true);
         }
         
+        // Setup terrain VBO
+        myTerrain.setupVBO(gl);
     }
 
     @Override

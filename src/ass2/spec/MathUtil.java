@@ -25,6 +25,13 @@ public class MathUtil {
         }
         return r;
     }
+    public static float[] vectorMinus(float[] a, float[] b) {
+        float[] r = new float[a.length];
+        for(int i = 0; i < a.length; i++) {
+            r[i] = b[i] - a[i];
+        }
+        return r;
+    }
     
     /**
      * Calculate the normal vector given 3 points (counter-clockwise)
@@ -39,6 +46,18 @@ public class MathUtil {
         double[] v = vectorMinus(p0, p2);
         // Normal calculation
         double[] n = {
+            u[Y]*v[Z] - u[Z]*v[Y],
+            u[Z]*v[X] - u[X]*v[Z],
+            u[X]*v[Y] - u[Y]*v[X]
+        };
+        return n;
+    }
+    public static float[] normal(float[] p0, float[] p1, float[] p2) {
+        // Vectors
+    	float[] u = vectorMinus(p0, p1);
+        float[] v = vectorMinus(p0, p2);
+        // Normal calculation
+        float[] n = {
             u[Y]*v[Z] - u[Z]*v[Y],
             u[Z]*v[X] - u[X]*v[Z],
             u[X]*v[Y] - u[Y]*v[X]

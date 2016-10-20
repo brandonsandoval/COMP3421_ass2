@@ -13,6 +13,28 @@ public class MaterialLightProp {
     private static float matShine[] = null;
     private static float emm[] = null;
 
+    public static void redLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{0.00f, 0.00f, 0.00f, 1.0f};
+        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        matShine = new float[]{50.0f};
+        emm = new float[]{1.0f, 0.0f, 0.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    public static void greenLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{0.00f, 0.00f, 0.00f, 1.0f};
+        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        matShine = new float[]{50.0f};
+        emm = new float[]{0.0f, 1.0f, 0.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    public static void blueLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{0.00f, 0.00f, 0.00f, 1.0f};
+        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        matShine = new float[]{50.0f};
+        emm = new float[]{0.0f, 0.0f, 1.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    
     public static void terrainLightProp(GL2 gl) {
         matAmbAndDif = new float[]{0.00f, 0.60f, 0.00f, 1.0f};
         matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
