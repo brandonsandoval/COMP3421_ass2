@@ -330,16 +330,19 @@ public class Terrain {
 				null, 
 				GL2.GL_STATIC_DRAW);
         posData = Buffers.newDirectFloatBuffer(positions);
+        positions = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
 				0,
 				numPoints*3*Float.BYTES,
 				posData);
         normData = Buffers.newDirectFloatBuffer(normals);
+        normals = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
         		numPoints*3*Float.BYTES,
 				numNormals*3*Float.BYTES,
 				normData);
         texData = Buffers.newDirectFloatBuffer(textures);
+        textures = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
         		numPoints*3*Float.BYTES +
 				numNormals*3*Float.BYTES,

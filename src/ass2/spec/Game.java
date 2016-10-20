@@ -10,6 +10,7 @@ package ass2.spec;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
@@ -148,6 +149,103 @@ public class Game extends JFrame implements GLEventListener {
         }
         count++;
         
+        double[] pos = Camera.getPos();
+        double[] angle = Camera.getAngle();
+
+        //if(!Camera.getThirdPerson()) {
+            // WSAD [MOVEMENT]
+            if(KeyboardController.key(Keys.W)) {
+                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+                if(Camera.getThirdPerson()){
+                    pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]));
+                }else{
+                    pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]+45));
+                }
+                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
+            }
+            if(KeyboardController.key(Keys.S)) {
+                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+                if(Camera.getThirdPerson()){
+                    pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]));
+                }else{
+                    pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]+45));
+                }
+                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
+            }
+            if(KeyboardController.key(Keys.A)) {
+                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
+                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
+            }
+            if(KeyboardController.key(Keys.D)) {
+                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
+                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
+            }/*
+        } else {
+            if(KeyboardController.key(Keys.W)) {
+                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+                pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]+45));
+                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
+            }
+            if(KeyboardController.key(Keys.S)) {
+                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+                pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]+45));
+                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
+            }
+            if(KeyboardController.key(Keys.A)) {
+                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));
+                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
+            }
+            if(KeyboardController.key(Keys.D)) {
+                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
+                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
+            }
+        }*/
+        // QE [ALTITUDE]
+        if(KeyboardController.key(Keys.SPACE)) {
+            pos[Game.Y] += 100;
+        }
+        if(KeyboardController.key(Keys.SHIFT)) {
+            pos[Game.Y] -= 1;
+        }
+
+        // ARROW KEYS [ROTATE] - only used for testing
+        if(KeyboardController.key(Keys.UP)) {
+            angle[Game.Z] += 1;
+        }
+        if(KeyboardController.key(Keys.DOWN)) {
+            angle[Game.Z] -= 1;
+        }
+        if(KeyboardController.key(Keys.LEFT)) {
+            angle[Game.Y] += 1;
+        }
+        if(KeyboardController.key(Keys.RIGHT)) {
+            angle[Game.Y] -= 1;
+        }
+
+        // OTHER
+        if(KeyboardController.keyToggle(Keys.T)) {
+            Camera.setMouseLock(!Camera.getMouseLock());
+        }
+        if(KeyboardController.keyToggle(Keys.V)) {
+            Camera.setThirdPerson(!Camera.getThirdPerson());
+            if(Camera.getThirdPerson()) {
+                angle[Game.X] = 0;
+                angle[Game.Y] = 0;
+                angle[Game.Z] = -45;
+            } else {
+                angle[Game.X] = 0;
+                angle[Game.Y] = 0;
+                angle[Game.Z] = 0;
+            }
+        }
+        if(KeyboardController.keyToggle(Keys.G)) {
+            Camera.setGravity(!Camera.getGravity());
+            System.out.println("GRAVITY:" + Camera.getGravity());
+        }
+        if(KeyboardController.keyToggle(Keys.C)) {
+            Camera.setCollision(!Camera.getCollision());
+            System.out.println("COLLISION:" + Camera.getCollision());
+        }
     }
     
     

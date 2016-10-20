@@ -4,121 +4,78 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyboardController implements KeyListener {
+    
+    private static boolean[] keys = new boolean[Keys.values().length];
+    private static boolean[] check = new boolean[Keys.values().length];
+    
+    public KeyboardController() {
+        for(int i = 0; i < Keys.values().length; i++) {
+            keys[i] = false;
+        }
+        for(int i = 0; i < Keys.values().length; i++) {
+            check[i] = false;
+        }
+    }
 
-    // Do not change this value, ASCII[0-255]
-    private static final int ASCII_SIZE = 256;
-    
-    private boolean[] input;
-    
-    public KeyboardController(){
-        this.input = new boolean[ASCII_SIZE];
+    // True = key pressed, False = key released
+    public static boolean key(Keys k) {
+        return keys[k.ordinal()];
+    }
+
+    // True = key pressed then set any future calls to keyToggle to false
+    // until key is released
+    public static boolean keyToggle(Keys k) {
+        if(check[k.ordinal()] == false && keys[k.ordinal()] == true){
+            check[k.ordinal()] = true;
+            keys[k.ordinal()] = false;
+            return true;
+        }else{
+            return false;
+        }
     }
     
+    @Override
     public void keyPressed(KeyEvent e) {
-
-        double[] pos = Camera.getPos();
-        double[] angle = Camera.getAngle();
-        input[e.getKeyCode()] = true;
-
-        if(!Camera.getThirdPerson()) {
-            // WSAD [MOVEMENT]
-            if(input[KeyEvent.VK_W]) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_S]) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_A]) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-            if(input[KeyEvent.VK_D]) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-        } else {
-            if(input[KeyEvent.VK_W]) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]+45));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_S]) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]+45));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(input[KeyEvent.VK_A]) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-            if(input[KeyEvent.VK_D]) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-        }
-        // QE [ALTITUDE]
-        if(input[KeyEvent.VK_SPACE]) {
-            pos[Game.Y] += 1;
-        }
-        if(input[KeyEvent.VK_SHIFT]) {
-            pos[Game.Y] -= 1;
-        }
-
-        // ARROW KEYS [ROTATE] - only used for testing
-        if(input[KeyEvent.VK_UP]) {
-            angle[Game.Z] += 1;
-        }
-        if(input[KeyEvent.VK_DOWN]) {
-            angle[Game.Z] -= 1;
-        }
-        if(input[KeyEvent.VK_LEFT]) {
-            angle[Game.Y] += 1;
-        }
-        if(input[KeyEvent.VK_RIGHT]) {
-            angle[Game.Y] -= 1;
-        }
-
-        // OTHER
-        if(input[KeyEvent.VK_T]) {
-            Camera.setMouseLock(!Camera.getMouseLock());
-        }
-        if(input[KeyEvent.VK_V]) {
-            Camera.setThirdPerson(!Camera.getThirdPerson());
-            if(Camera.getThirdPerson()) {
-                angle[Game.X] = 0;
-                angle[Game.Y] = 0;
-                angle[Game.Z] = -45;
-            } else {
-                angle[Game.X] = 0;
-                angle[Game.Y] = 0;
-                angle[Game.Z] = 0;
-            }
-        }
-        if(input[KeyEvent.VK_G]) {
-            Camera.setGravity(!Camera.getGravity());
-            System.out.println("GRAVITY:" + Camera.getGravity());
-        }
-        if(input[KeyEvent.VK_C]) {
-            Camera.setCollision(!Camera.getCollision());
-            System.out.println("COLLISION:" + Camera.getCollision());
-        }
-
+        keys[convertKeyEventtoKeys(e)] = true;
     }
-    
     @Override
     public void keyReleased(KeyEvent e) {
-        // Something goes wrong here with error message but nothing actually happens..
-        input[e.getKeyCode()] = false;
+        keys[convertKeyEventtoKeys(e)] = false;
+        check[convertKeyEventtoKeys(e)] = false;
     }
-
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
     }
 
+    public static int convertKeyEventtoKeys(KeyEvent ke){
+        if(ke.getKeyCode() == KeyEvent.VK_SPACE)
+            return Keys.SPACE.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
+            return Keys.SHIFT.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_LEFT)
+            return Keys.LEFT.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
+            return Keys.RIGHT.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_UP)
+            return Keys.UP.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_DOWN)
+            return Keys.DOWN.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_W)
+            return Keys.W.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_A)
+            return Keys.A.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_S)
+            return Keys.S.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_D)
+            return Keys.D.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_T)
+            return Keys.T.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_C)
+            return Keys.C.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_G)
+            return Keys.G.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_V)
+            return Keys.V.ordinal();
+        return 0;
+    }
 }
