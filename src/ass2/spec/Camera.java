@@ -7,11 +7,8 @@ package ass2.spec;
 /************************************
  *            IMPORTS               *
  ***********************************/
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
-
-// TODO: CLEAN CODE (will do later)
 
 // W S A D
 // Shift / Space (Altitude)
@@ -105,6 +102,7 @@ public class Camera {
     
     public void update() {
         if(collision) {
+        	System.out.println("RES: " + cameraPos[Game.X] + " " + cameraPos[Game.Y] + " " + cameraPos[Game.Z]);
             double altitude = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]);
             if(cameraPos[Game.Y] <= altitude) {
                 cameraPos[Game.Y] = altitude+0.5;
@@ -183,5 +181,6 @@ public class Camera {
     public static void setMouseLock(boolean v) {mouseLock = v;}
     public static void setGravity(boolean v) {gravity = v;}
     public static void setCollision(boolean v) {collision = v;}
+    public static void setPos(double[] pos) { cameraPos = pos; }
     
 }

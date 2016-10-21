@@ -10,11 +10,11 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
-
+//	by Shin
 public class MapGenerator {
     
-    public static final String INPUT = "./tests/map.jpg";
-    public static final String OUTPUT = "./tests/map.json";
+    public static final String INPUT = "./tests/mapXL.png";
+    public static final String OUTPUT = "./tests/mapXL.json";
     
     public static void main(String[] args) {
         MapGenerator map = new MapGenerator();

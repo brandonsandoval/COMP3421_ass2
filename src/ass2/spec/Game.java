@@ -10,11 +10,11 @@ package ass2.spec;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -42,7 +42,7 @@ public class Game extends JFrame implements GLEventListener {
      ***********************************/
     private static final long serialVersionUID = 1L;
 
-    // Misc
+    // X Y Z
     public static final int X = 0;
     public static final int Y = 1;
     public static final int Z = 2;
@@ -58,23 +58,32 @@ public class Game extends JFrame implements GLEventListener {
     // Camera
     private Camera myCamera;
     
+    //	Portal
+    //private Portal portal_in;
+    //private Portal portal_out;
+    
     // Mouse and Keyboard listeners
     private MouseController myMouse;
     private KeyboardController myKeyboard;
+    
+    // An invisible cursor
+    private BufferedImage cursorImg;
+    private static Cursor blankCursor;
     
     // For FPS counter
     private long timing = 0;
     private int count = 0;
     
-    // An invisible cursor
-    BufferedImage cursorImg;
-    static Cursor blankCursor;
-    
+    //	Other
+    boolean wireframeMode;
+    boolean drawCoord;
+
     
     /************************************
      *           CONSTRUCTOR            *
      ***********************************/
      public Game(Terrain terrain) {
+    	 
         super("Assignment 2");
         
         this.myTerrain = terrain;
@@ -83,12 +92,25 @@ public class Game extends JFrame implements GLEventListener {
         this.myMouse = new MouseController();
         this.myKeyboard = new KeyboardController();
         
+        //	Setting Portal IDs
+        //this.portal_in = new Portal(0);
+        //this.portal_out = new Portal(1);
+        
+        //	Setting Portal Location
+        //portal_in.setPos(new double[] {141,135,120});
+        //portal_out.setPos(new double[] {145,135,120});
+        
         this.timing = 0;
         this.count = 0;
         
+        //	Set Cursor Invisible
         this.cursorImg = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
         blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
                 , new Point(0,0), "blank cursor");
+        
+        //	Other
+        this.wireframeMode = false;
+        this.drawCoord = false;
         
      }
      
@@ -97,6 +119,7 @@ public class Game extends JFrame implements GLEventListener {
       *         METHOD (RUN)             *
       ***********************************/
     public void run() {
+    	
         // Init Profile
         GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
@@ -127,6 +150,7 @@ public class Game extends JFrame implements GLEventListener {
         
     }
     
+    
      /************************************
       *         METHOD (UPDATE)          *
       ***********************************/
@@ -147,11 +171,13 @@ public class Game extends JFrame implements GLEventListener {
             System.out.println();
             count = 0;
         }
-        count++;
-        
+
+        //	Camera Updates
         double[] pos = Camera.getPos();
         double[] angle = Camera.getAngle();
 
+        //	Camera uses EULER ANGLES
+        //	PITCH and YAW
         //if(!Camera.getThirdPerson()) {
             // WSAD [MOVEMENT]
             if(KeyboardController.key(Keys.W)) {
@@ -200,6 +226,7 @@ public class Game extends JFrame implements GLEventListener {
                 pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
             }
         }*/
+            
         // QE [ALTITUDE]
         if(KeyboardController.key(Keys.SPACE)) {
             pos[Game.Y] += 100;
@@ -222,7 +249,7 @@ public class Game extends JFrame implements GLEventListener {
             angle[Game.Y] -= 1;
         }
 
-        // OTHER
+        // OTHER TOGGLES
         if(KeyboardController.keyToggle(Keys.T)) {
             Camera.setMouseLock(!Camera.getMouseLock());
         }
@@ -246,6 +273,60 @@ public class Game extends JFrame implements GLEventListener {
             Camera.setCollision(!Camera.getCollision());
             System.out.println("COLLISION:" + Camera.getCollision());
         }
+        
+        //	COLLISION WITH END OF MAP
+        //	CURRENTLY ONLY WORKS FOR < 0
+        if(pos[Game.X] < 0) {
+        	pos[Game.X] = 0;
+        } else if(pos[Game.X] > myTerrain.size().getHeight()) {
+        	pos[Game.X] = myTerrain.size().getHeight();
+        }
+        if(pos[Game.Z] < 0) {
+        	pos[Game.Z] = 0;
+        } else if(pos[Game.Z] > myTerrain.size().getWidth()) {
+        	pos[Game.Z] = myTerrain.size().getWidth();
+        }
+        System.out.println("SIZE: " + myTerrain.size().getHeight());
+        System.out.println("X: " + pos[Game.X]);
+        System.out.println("Z: " + pos[Game.Z]);
+        
+        //	Portal Update
+/*        double[] portalPosA = portal_in.getPos();
+        double[] portalPosB = portal_out.getPos();
+        
+        //	If player enters portal A
+        if((portalPosA[Game.X] == Math.round(pos[Game.X]))
+        		&& (portalPosA[Game.Y] == Math.round(pos[Game.Y])
+        				||	portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
+        		&& (portalPosA[Game.Z] == Math.round(pos[Game.Z]))) {
+        	
+        	 double[] temp = portalPosB.clone();
+        	 temp[Game.X] += 1;
+        	 
+        	 Camera.setPos(temp);
+        	 System.out.println("PORTAL A TO B");
+        	
+        //	If player enters portal B
+        } else if((portalPosB[Game.X] == Math.round(pos[Game.X]))
+        		&& (portalPosB[Game.Y] == Math.round(pos[Game.Y])
+        				||	portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
+        		&& (portalPosB[Game.Z] == Math.round(pos[Game.Z]))) {
+        	
+	       	 double[] temp = portalPosA.clone();
+	       	 temp[Game.X] += 1;
+	       	 
+        	 Camera.setPos(temp);
+        	 System.out.println("PORTAL B TO A");
+        }
+        
+        //	Portal Animation
+        if(count % 5 == 0) {
+		    portal_in.nextImg();
+		    portal_out.nextImg();
+        }
+        
+        count ++;*/
+        
     }
     
     
@@ -281,12 +362,15 @@ public class Game extends JFrame implements GLEventListener {
         lp.setup(gl);
         
         // Draws X, Y, Z but only without Lights
-        drawCoor(gl, 128, 140, 128);
+        if(drawCoord) {
+        	drawCoor(gl, 128, 140, 128);
+        }
         
         // Wireframe Mode
-        //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
-        //gl.glColor3d(1,1,0);
-        //gl.glLineWidth(1);
+        if(wireframeMode) {
+        	gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+        }
+        
         myTerrain.drawVBOTerrain(gl);
         //myTerrain.drawTerrain(gl);
         
@@ -302,6 +386,10 @@ public class Game extends JFrame implements GLEventListener {
             road.drawRoad(gl);
         }
         
+        //	Draw Portals
+        //portal_in.drawPortal(gl);
+        //portal_out.drawPortal(gl);
+        
         // Needed for Debugging
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         
@@ -310,7 +398,6 @@ public class Game extends JFrame implements GLEventListener {
     // Drawing X, Y, Z
     public void drawCoor(GL2 gl, double x, double y, double z) {
     	double length = 12;
-        //gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINES);
         gl.glLineWidth(10);
         gl.glBegin(GL2.GL_LINES); {
             // X (RED)
@@ -335,9 +422,9 @@ public class Game extends JFrame implements GLEventListener {
             gl.glVertex3d(x, y, z);
         
         } gl.glEnd();
+        gl.glLineWidth(2);
     }
 
-     
      /************************************
       *     METHOD (GLEVENTLISTENER)     *
       ***********************************/
@@ -375,10 +462,22 @@ public class Game extends JFrame implements GLEventListener {
         // Turn on texturing
         gl.glEnable(GL2.GL_TEXTURE_2D);
         myTerrain.loadTerrain(gl, true);
+       
+        //	Load Tree Texture
         List<Tree> trees = myTerrain.trees();
         for(Tree tree : trees) {
             tree.loadTexture(gl, true);
         }
+        
+        //	Load Road Texture
+        List<Road> roads = myTerrain.roads();
+        for(Road road : roads) {
+        	road.loadTexture(gl, true);
+        }
+        
+        //	Load Portal Textures
+        //portal_in.loadTexture(gl, true);
+        //portal_out.loadTexture(gl, true);
         
         // Setup terrain VBO
         myTerrain.setupVBO(gl);

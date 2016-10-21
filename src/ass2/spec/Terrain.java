@@ -200,7 +200,7 @@ public class Terrain {
      * @param z
      */
     public void addRoad(double width, double[] spine) {
-        Road road = new Road(width, spine);
+        Road road = new Road(width, spine, this);
         myRoads.add(road);        
     }
 
@@ -424,6 +424,7 @@ public class Terrain {
                 // The two triangles represents 1 grid square
                 double[] n;
                 gl.glBegin(GL2.GL_TRIANGLES);{
+
                     n = MathUtil.normal(p0, p1, p2);
                     gl.glNormal3d(n[0], n[1], n[2]);
                     gl.glTexCoord2d(0, 0);
@@ -446,4 +447,5 @@ public class Terrain {
             }
         }
     }
+
 }

@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL2;
 
 /**
  * Static functions to set the material properties for various objects
- * @author BrandonSandoval
+ * @author BrandonSandoval, James Shin
  *
  */
 public class MaterialLightProp {
@@ -56,6 +56,30 @@ public class MaterialLightProp {
         matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
         matShine = new float[]{50.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    
+    public static void roadLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{1f, 1f, 1f, 1.0f};
+        matSpec = new float[]{1f, 1f, 1f, 1.0f};
+        matShine = new float[]{100.0f};
+        emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    
+    public static void portalLightPropA(GL2 gl) {
+        matAmbAndDif = new float[]{1f, 0.5f, 0f, 1.0f};
+        matSpec = new float[]{1f, 1f, 1f, 1.0f};
+        matShine = new float[]{128.0f};
+        emm = new float[]{1f, 0.5f, 0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    
+    public static void portalLightPropB(GL2 gl) {
+        matAmbAndDif = new float[]{0f, 0.5f, 1f, 1.0f};
+        matSpec = new float[]{1f, 1f, 1f, 1.0f};
+        matShine = new float[]{128.0f};
+        emm = new float[]{0f, 0.5f, 1f, 1.0f};
         applyMaterialLightProp(gl);
     }
     
