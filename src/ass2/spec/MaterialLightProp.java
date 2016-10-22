@@ -42,6 +42,21 @@ public class MaterialLightProp {
         emm = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
         applyMaterialLightProp(gl);
     }
+
+    public static void enemyLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{1.00f, 1.00f, 1.00f, 1.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        matShine = new float[]{0.0f};
+        emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    public static void enemyHeadLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{1.00f, 1.00f, 1.00f, 1.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        matShine = new float[]{0.0f};
+        emm = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
     
     public static void terrainLightProp(GL2 gl) {
         matAmbAndDif = new float[]{0.00f, 0.60f, 0.00f, 1.0f};

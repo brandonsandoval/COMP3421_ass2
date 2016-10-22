@@ -20,6 +20,7 @@ public class Terrain {
     private double[][] myAltitude;
     private List<Tree> myTrees;
     private List<Road> myRoads;
+    private List<Enemy> myEnemies;
     private float[] mySunlight;
 
     // *** Texturing
@@ -55,6 +56,7 @@ public class Terrain {
         myAltitude = new double[width][depth];
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
+        myEnemies = new ArrayList<Enemy>();
         mySunlight = new float[3];
     }
     
@@ -72,6 +74,10 @@ public class Terrain {
 
     public List<Road> roads() {
         return myRoads;
+    }
+    
+    public List<Enemy> enemies() {
+        return myEnemies;
     }
 
     public float[] getSunlight() {
@@ -195,6 +201,19 @@ public class Terrain {
         double y = altitude(x, z);
         Tree tree = new Tree(x, y, z);
         myTrees.add(tree);
+    }
+
+    /**
+     * Add an enemy at the specified (x,z) point. 
+     * The enemies y coordinate is calculated from the altitude of the terrain at that point.
+     * 
+     * @param x
+     * @param z
+     */
+    public void addEnemy(double x, double z, double angle) {
+        double y = altitude(x, z);
+        Enemy enemy = new Enemy(x, y, z, angle);
+        myEnemies.add(enemy);
     }
 
     /**

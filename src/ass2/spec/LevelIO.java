@@ -60,6 +60,17 @@ public class LevelIO {
                 terrain.addTree(x, z);
             }
         }
+
+        if (jsonTerrain.has("enemies")) {
+            JSONArray jsonEnemies = jsonTerrain.getJSONArray("enemies");
+            for (int i = 0; i < jsonEnemies.length(); i++) {
+                JSONObject jsonEnemie = jsonEnemies.getJSONObject(i);
+                double angle = jsonEnemie.getDouble("angle");
+                double x = jsonEnemie.getDouble("x");
+                double z = jsonEnemie.getDouble("z");
+                terrain.addEnemy(x, z, angle);
+            }
+        }
         
         if (jsonTerrain.has("roads")) {
             JSONArray jsonRoads = jsonTerrain.getJSONArray("roads");
@@ -106,7 +117,7 @@ public class LevelIO {
             }
         }
         json.put("altitude", altitude);
-        
+
         JSONArray trees = new JSONArray();
         for (Tree t : terrain.trees()) {
             JSONObject j = new JSONObject();
@@ -116,6 +127,18 @@ public class LevelIO {
             trees.put(j);
         }
         json.put("trees", trees);
+        
+        JSONArray enemies = new JSONArray();
+        for (Enemy e : terrain.enemies()) {
+            JSONObject j = new JSONObject();
+            double[] position = e.getPosition();
+            double angle = e.getAngle();
+            j.put("angle", angle);
+            j.put("x", position[0]);
+            j.put("z", position[2]);
+            enemies.put(j);
+        }
+        json.put("enemies", enemies);
 
         JSONArray roads = new JSONArray();
         for (Road r : terrain.roads()) {

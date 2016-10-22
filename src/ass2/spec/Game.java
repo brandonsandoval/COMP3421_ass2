@@ -287,9 +287,11 @@ public class Game extends JFrame implements GLEventListener {
         } else if(pos[Game.Z] > myTerrain.size().getWidth()-1.01) {
             pos[Game.Z] = myTerrain.size().getWidth()-1.01;
         }
-        System.out.println("SIZE: " + myTerrain.size().getHeight());
-        System.out.println("X: " + pos[Game.X]);
-        System.out.println("Z: " + pos[Game.Z]);
+        //System.out.println("SIZE: " + myTerrain.size().getHeight());
+        //System.out.println("X: " + pos[Game.X]);
+        //System.out.println("Z: " + pos[Game.Z]);
+        
+        
         
         // Portal Update
 /*        double[] portalPosA = portal_in.getPos();
@@ -351,7 +353,7 @@ public class Game extends JFrame implements GLEventListener {
             myCamera.update();
         } else {
             myCamera.setView(gl);
-            avatar.draw(gl);
+            avatar.drawAvatar(gl);
             myCamera.update();
         }
 
@@ -385,6 +387,12 @@ public class Game extends JFrame implements GLEventListener {
         List<Road> roads = myTerrain.roads();
         for(Road road : roads) {
             road.drawRoad(gl);
+        }
+        
+        // Draw all enemies
+        List<Enemy> enemies = myTerrain.enemies();
+        for(Enemy enemy : enemies) {
+            enemy.drawEnemy(gl);
         }
         
         // Draw Portals
@@ -475,6 +483,13 @@ public class Game extends JFrame implements GLEventListener {
         for(Road road : roads) {
             road.loadTexture(gl, true);
         }
+        
+        // Load Enemy Texture
+        List<Enemy> enemies = myTerrain.enemies();
+        for(Enemy enemy : enemies) {
+            System.out.println(enemy.getPosition()[0]+" "+enemy.getPosition()[2]);
+            enemy.loadTexture(gl, true);
+        }
 
         // Setup Avatar
         avatar = new Avatar(CAMERA_HEIGHT);
@@ -486,6 +501,8 @@ public class Game extends JFrame implements GLEventListener {
         
         // Setup terrain VBO
         myTerrain.setupVBO(gl);
+        
+        
     }
 
     @Override
