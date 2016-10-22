@@ -193,7 +193,7 @@ public class Road {
             double[] pt;
             int count = 0;
             
-            for(double i = 0.05; i < 1; i += 0.05) {
+            for(double i = 0.01; i < 1; i += 0.01) {
                 
                 pt = point(i);
                 double[][] normals = normal(prev_pt, pt);
@@ -206,13 +206,13 @@ public class Road {
                 
                 gl.glTexCoord2d(i, 0);
                 gl.glVertex3d(roadPointB[0], myTerrain.getGridAltitude((int)Math.round(clamp(roadPointB[0], 0, myTerrain.getMySize().width-1)), 
-                                                                       (int)Math.round(clamp(roadPointB[1], 0, myTerrain.getMySize().height-1)))+0.05, 
-                                                                       roadPointB[1]+0.05);
+                                                                       (int)Math.round(clamp(roadPointB[1], 0, myTerrain.getMySize().height-1)))+0.1, 
+                                                                       roadPointB[1]);
                 
                 gl.glTexCoord2d(i, 1);
                 gl.glVertex3d(roadPointA[0], myTerrain.getGridAltitude((int)Math.round(clamp(roadPointA[0], 0, myTerrain.getMySize().width-1)), 
-                                                                       (int)Math.round(clamp(roadPointA[1], 0, myTerrain.getMySize().height-1)))+0.05, 
-                                                                       roadPointA[1]+0.05);
+                                                                       (int)Math.round(clamp(roadPointA[1], 0, myTerrain.getMySize().height-1)))+0.1, 
+                                                                       roadPointA[1]);
                 
                 //gl.glNormal3d(0, 1, 0);
                 //gl.glVertex3d(roadPointB[0], 134, roadPointB[1]);
