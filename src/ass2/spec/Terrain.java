@@ -111,6 +111,10 @@ public class Terrain {
         }
     }
 
+    public Dimension getMySize() {
+        return mySize;
+    }
+    
     /**
      * Get the altitude at a grid point
      * 
@@ -367,10 +371,10 @@ public class Terrain {
         gl.glNormalPointer(GL.GL_FLOAT, 0, numPoints*3*Float.BYTES);
         gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, numPoints*3*Float.BYTES + numNormals*3*Float.BYTES);
         gl.glDrawArrays(GL2.GL_TRIANGLES, 0, numPoints);
-        //gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        //gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        //gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
     }
 
     /**

@@ -205,10 +205,14 @@ public class Road {
                 double[] roadPointB = getRoadPoint(normals[1], pt);
                 
                 gl.glTexCoord2d(i, 0);
-                gl.glVertex3d(roadPointB[0], myTerrain.getGridAltitude((int)Math.round(roadPointB[0]), (int)Math.round(roadPointB[1]))+0.1, roadPointB[1]);
+                gl.glVertex3d(roadPointB[0], myTerrain.getGridAltitude((int)Math.round(clamp(roadPointB[0], 0, myTerrain.getMySize().width-1)), 
+                                                                       (int)Math.round(clamp(roadPointB[1], 0, myTerrain.getMySize().height-1)))+0.05, 
+                                                                       roadPointB[1]+0.05);
                 
                 gl.glTexCoord2d(i, 1);
-                gl.glVertex3d(roadPointA[0], myTerrain.getGridAltitude((int)Math.round(roadPointA[0]), (int)Math.round(roadPointA[1]))+0.1, roadPointA[1]);
+                gl.glVertex3d(roadPointA[0], myTerrain.getGridAltitude((int)Math.round(clamp(roadPointA[0], 0, myTerrain.getMySize().width-1)), 
+                                                                       (int)Math.round(clamp(roadPointA[1], 0, myTerrain.getMySize().height-1)))+0.05, 
+                                                                       roadPointA[1]+0.05);
                 
                 //gl.glNormal3d(0, 1, 0);
                 //gl.glVertex3d(roadPointB[0], 134, roadPointB[1]);
@@ -257,6 +261,15 @@ public class Road {
         if(myRoadTexture == null) {
             myRoadTexture = new MyTexture(gl, textureRoad, textureExt, mipmaps);
         }
+    }
+    
+    public double clamp(double value, double lower, double upper) {
+        if(value <= lower) {
+            return lower;
+        }else if(value >= upper) {
+            return upper;
+        }
+        return value;
     }
 
 }

@@ -35,7 +35,7 @@ public class Camera {
     private static final double[] START_LOOK = {0,0,0};
     private static final double[] START_ORIEN = {0,0,0};
     private static final double START_FOV = 80;
-    private static final double START_ZNEAR = 0.01;
+    private static final double START_ZNEAR = 0.1;
     private static final double START_ZFAR = 300;
 
     // Camera Settings
