@@ -78,7 +78,7 @@ public class MyTexture {
             
             float fLargest[] = new float[1];
             gl.glGetFloatv(GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, fLargest,0);
-            System.out.println(fLargest[0]);
+            //System.out.println(fLargest[0]);
             gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest[0]);
             gl.glGenerateMipmap(GL2.GL_TEXTURE_2D);             
         } else {
