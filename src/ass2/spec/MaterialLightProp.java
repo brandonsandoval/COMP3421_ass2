@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL2;
 
 /**
  * Static functions to set the material properties for various objects
- * @author BrandonSandoval, James Shin
+ * @author BrandonSandoval
  *
  */
 public class MaterialLightProp {
@@ -35,18 +35,26 @@ public class MaterialLightProp {
         applyMaterialLightProp(gl);
     }
     
+    public static void avatarLightProp(GL2 gl) {
+        matAmbAndDif = new float[]{1.00f, 1.00f, 1.00f, 1.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        matShine = new float[]{0.0f};
+        emm = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+        applyMaterialLightProp(gl);
+    }
+    
     public static void terrainLightProp(GL2 gl) {
         matAmbAndDif = new float[]{0.00f, 0.60f, 0.00f, 1.0f};
-        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matShine = new float[]{50.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        matShine = new float[]{0.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
         applyMaterialLightProp(gl);
     }
     
     public static void treeHeadLightProp(GL2 gl) {
         matAmbAndDif = new float[]{0.50f, 1.00f, 0.50f, 1.0f};
-        matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matShine = new float[]{50.0f};
+        matSpec = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+        matShine = new float[]{0.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
         applyMaterialLightProp(gl);
     }
@@ -54,7 +62,7 @@ public class MaterialLightProp {
     public static void treeTrunkLightProp(GL2 gl) {
         matAmbAndDif = new float[]{0.50f, 0.33f, 0.22f, 1.0f};
         matSpec = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
-        matShine = new float[]{50.0f};
+        matShine = new float[]{0.0f};
         emm = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
         applyMaterialLightProp(gl);
     }

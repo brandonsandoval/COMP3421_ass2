@@ -7,8 +7,11 @@ package ass2.spec;
 /************************************
  *            IMPORTS               *
  ***********************************/
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
+
+// TODO: CLEAN CODE (will do later)
 
 // W S A D
 // Shift / Space (Altitude)
@@ -46,7 +49,8 @@ public class Camera {
 
     // Input Settings
     private static boolean mouseLock;
-    private static double view_distance;
+    private double viewDistance;
+    private double height;
     
     // Mode Settings
     private static boolean thirdPerson;
@@ -54,9 +58,10 @@ public class Camera {
     private static boolean gravity;
     
     private static Terrain myTerrain;
+    
 
     // Constructor
-    public Camera(Terrain myTerrain) {
+    public Camera(Terrain myTerrain, double height, double viewDistance) {
         Camera.myTerrain = myTerrain;
         
         System.out.println("Setting up Camera");
@@ -74,7 +79,8 @@ public class Camera {
         zFar = START_ZFAR;
 
         mouseLock = false;
-        view_distance = 3;
+        this.height = height;
+        this.viewDistance = viewDistance;
         gravity = true;
         collision = true;
         
@@ -84,9 +90,11 @@ public class Camera {
         GLU glu = new GLU();
         
         if(thirdPerson) {
-            glu.gluLookAt(cameraPos[Game.X] - Math.cos(Math.toRadians(cameraAngle[Game.Y])) * Math.cos(Math.toRadians(cameraAngle[Game.Z]))*view_distance,
-                    cameraPos[Game.Y] - Math.sin(Math.toRadians(cameraAngle[Game.Z]))*view_distance,
-                    cameraPos[Game.Z] + Math.sin(Math.toRadians(cameraAngle[Game.Y]))*view_distance,
+            // Eye, Centre, up
+            glu.gluLookAt(
+                    cameraPos[Game.X] - Math.cos(Math.toRadians(cameraAngle[Game.Y]))*Math.cos(Math.toRadians(cameraAngle[Game.Z]))*viewDistance,
+                    cameraPos[Game.Y] - Math.sin(Math.toRadians(cameraAngle[Game.Z]))*viewDistance,
+                    cameraPos[Game.Z] + Math.sin(Math.toRadians(cameraAngle[Game.Y]))*viewDistance,
                     
                     cameraPos[Game.X],
                     cameraPos[Game.Y],
@@ -102,7 +110,6 @@ public class Camera {
     
     public void update() {
         if(collision) {
-        	System.out.println("RES: " + cameraPos[Game.X] + " " + cameraPos[Game.Y] + " " + cameraPos[Game.Z]);
             double altitude = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]);
             if(cameraPos[Game.Y] <= altitude) {
                 cameraPos[Game.Y] = altitude+0.5;
@@ -110,59 +117,11 @@ public class Camera {
         }
         
         if(gravity) {
-            cameraPos[Game.Y] = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]) + 2;
+            cameraPos[Game.Y] = myTerrain.altitude(cameraPos[Game.X], cameraPos[Game.Z]) + height;
         }
     
     }
 
-    // Draw Cube
-    public void draw(GL2 gl) {
-        
-          gl.glBegin(GL2.GL_QUADS); {
-            // front   
-            gl.glColor3f(1, 0, 0);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]-1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]+1);
-            
-            // back 
-            gl.glColor3f(0, 0, 1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]-1, cameraPos[Game.Z]-1);
-                    
-            // top
-            gl.glColor3f(0, 1, 0);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-
-            // bottom
-            gl.glColor3f(1, 1, 0);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]-1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]+1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]-1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]-1);
-            
-            //left
-            gl.glColor3f(0, 1, 1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]+11);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]-1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]);
-            gl.glVertex3d(cameraPos[Game.X]-1, cameraPos[Game.Y]+1, cameraPos[Game.Z]);
-            
-            //right
-            gl.glColor3f(1, 0, 1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]-1);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]);
-            gl.glVertex3d(cameraPos[Game.X]+1, cameraPos[Game.Y]+1, cameraPos[Game.Z]);
-          } gl.glEnd();
-    }
-    
     // Gets
     public static double[] getPos() {return cameraPos;}
     public static double[] getAngle() {return cameraAngle;}
@@ -181,6 +140,5 @@ public class Camera {
     public static void setMouseLock(boolean v) {mouseLock = v;}
     public static void setGravity(boolean v) {gravity = v;}
     public static void setCollision(boolean v) {collision = v;}
-    public static void setPos(double[] pos) { cameraPos = pos; }
     
 }

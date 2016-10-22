@@ -54,7 +54,7 @@ public class MathUtil {
     }
     public static float[] normal(float[] p0, float[] p1, float[] p2) {
         // Vectors
-    	float[] u = vectorMinus(p0, p1);
+        float[] u = vectorMinus(p0, p1);
         float[] v = vectorMinus(p0, p2);
         // Normal calculation
         float[] n = {

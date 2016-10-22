@@ -18,9 +18,9 @@ public class Road {
     private MyTexture myRoadTexture = null;
     private String textureRoad = "img/road01.jpg";
     private String textureExt = "jpg";
-	private Terrain myTerrain;
-	
-	private static final int ALTITUDE = 0;
+    private Terrain myTerrain;
+    
+    private static final int ALTITUDE = 0;
     
     
     /** 
@@ -161,101 +161,101 @@ public class Road {
         //gl.glLineWidth(30);
         
         //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
-    	
-    	MaterialLightProp.roadLightProp(gl);
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, myRoadTexture.getTextureId());
-		
-    	gl.glBegin(GL2.GL_QUAD_STRIP); {
-    		
+        
+        MaterialLightProp.roadLightProp(gl);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, myRoadTexture.getTextureId());
+        
+        gl.glBegin(GL2.GL_QUAD_STRIP); {
+            
 
-/*    		//	First Points
-    		double[] pt1 = point(0.1);
-    		double[] pt2 = point(0.2);
-    		double[][] normals;
-    		
-    		normals = normal(pt1, pt2);
-    		normals[0] = normalize(normals[0]);
-    		normals[1] = normalize(normals[1]);
-    		
-    		double[] pointA = getRoadPoint(normals[0], pt1);
-    		double[] pointB = getRoadPoint(normals[1], pt1);
-    		
-    		gl.glVertex3d(pointA[0], 134, pointA[1]);
-    		gl.glVertex3d(pointB[0], 134, pointB[1]);
-    		gl.glVertex3d(pointA[0], 134, pointA[1]);
-    		gl.glVertex3d(pointB[0], 134, pointB[1]);*/
-    		
-    		
-    		
-    		
-    		
-    		double[] prev_pt = point(0);
-    		double[] pt;
-    		int count = 0;
-    		
-	    	for(double i = 0.05; i < 1; i += 0.05) {
-	    		
-	    		pt = point(i);
-	    		double[][] normals = normal(prev_pt, pt);
-	    		
-	    		normals[0] = normalize(normals[0]);
-	    		normals[1] = normalize(normals[1]);
-	    
-	    		double[] roadPointA = getRoadPoint(normals[0], pt);
-	    		double[] roadPointB = getRoadPoint(normals[1], pt);
-	    		
-	    		gl.glTexCoord2d(i, 0);
-	    		gl.glVertex3d(roadPointB[0], myTerrain.getGridAltitude((int)Math.round(roadPointB[0]), (int)Math.round(roadPointB[1]))+0.1, roadPointB[1]);
-	    		
-	    		gl.glTexCoord2d(i, 1);
-	    		gl.glVertex3d(roadPointA[0], myTerrain.getGridAltitude((int)Math.round(roadPointA[0]), (int)Math.round(roadPointA[1]))+0.1, roadPointA[1]);
-	    		
-	    		//gl.glNormal3d(0, 1, 0);
-	    		//gl.glVertex3d(roadPointB[0], 134, roadPointB[1]);
-	    				
-	    		count++;
-	    		prev_pt = pt;
-	    	}
-	    	
-    	} gl.glEnd();
+/*            // First Points
+            double[] pt1 = point(0.1);
+            double[] pt2 = point(0.2);
+            double[][] normals;
+            
+            normals = normal(pt1, pt2);
+            normals[0] = normalize(normals[0]);
+            normals[1] = normalize(normals[1]);
+            
+            double[] pointA = getRoadPoint(normals[0], pt1);
+            double[] pointB = getRoadPoint(normals[1], pt1);
+            
+            gl.glVertex3d(pointA[0], 134, pointA[1]);
+            gl.glVertex3d(pointB[0], 134, pointB[1]);
+            gl.glVertex3d(pointA[0], 134, pointA[1]);
+            gl.glVertex3d(pointB[0], 134, pointB[1]);*/
+            
+            
+            
+            
+            
+            double[] prev_pt = point(0);
+            double[] pt;
+            int count = 0;
+            
+            for(double i = 0.05; i < 1; i += 0.05) {
+                
+                pt = point(i);
+                double[][] normals = normal(prev_pt, pt);
+                
+                normals[0] = normalize(normals[0]);
+                normals[1] = normalize(normals[1]);
+        
+                double[] roadPointA = getRoadPoint(normals[0], pt);
+                double[] roadPointB = getRoadPoint(normals[1], pt);
+                
+                gl.glTexCoord2d(i, 0);
+                gl.glVertex3d(roadPointB[0], myTerrain.getGridAltitude((int)Math.round(roadPointB[0]), (int)Math.round(roadPointB[1]))+0.1, roadPointB[1]);
+                
+                gl.glTexCoord2d(i, 1);
+                gl.glVertex3d(roadPointA[0], myTerrain.getGridAltitude((int)Math.round(roadPointA[0]), (int)Math.round(roadPointA[1]))+0.1, roadPointA[1]);
+                
+                //gl.glNormal3d(0, 1, 0);
+                //gl.glVertex3d(roadPointB[0], 134, roadPointB[1]);
+                        
+                count++;
+                prev_pt = pt;
+            }
+            
+        } gl.glEnd();
         
     }
     
     public double[][] normal(double[] pt1, double[] pt2) {
-		
-    	double[][] normals = new double[2][2];
-    	double dx = pt2[0] - pt1[0];
-    	double dz = pt2[1] - pt1[1];
-    	
-    	normals[0][0] = -dz;
-    	normals[0][1] = dx;
-    	normals[1][0] = dz;
-    	normals[1][1] = -dx;
-    	
-    	return normals;
+        
+        double[][] normals = new double[2][2];
+        double dx = pt2[0] - pt1[0];
+        double dz = pt2[1] - pt1[1];
+        
+        normals[0][0] = -dz;
+        normals[0][1] = dx;
+        normals[1][0] = dz;
+        normals[1][1] = -dx;
+        
+        return normals;
     }
     
     public double[] normalize(double[] vector) {
-    	
-    	double magnitude = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
-    	
-    	double[] normalized = new double[2];
-    	
-    	normalized[0] = vector[0] / magnitude;
-    	normalized[1] = vector[1] / magnitude;
-    	
-    	return normalized;
+        
+        double magnitude = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
+        
+        double[] normalized = new double[2];
+        
+        normalized[0] = vector[0] / magnitude;
+        normalized[1] = vector[1] / magnitude;
+        
+        return normalized;
     }
     
-    //	Get Points of road width
+    // Get Points of road width
     public double[] getRoadPoint(double[] vector, double[] pt) {
-    	
-		return new double[] {pt[0] + vector[0]*myWidth, pt[1] + vector[1]*myWidth};
+        
+        return new double[] {pt[0] + vector[0]*myWidth, pt[1] + vector[1]*myWidth};
     }
     
     public void loadTexture(GL2 gl, boolean mipmaps){
         if(myRoadTexture == null) {
-        	myRoadTexture = new MyTexture(gl, textureRoad, textureExt, mipmaps);
+            myRoadTexture = new MyTexture(gl, textureRoad, textureExt, mipmaps);
         }
     }
 

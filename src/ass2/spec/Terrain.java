@@ -218,13 +218,13 @@ public class Terrain {
     // Load position data into array and setup VBO
     // This must be run before running drawVBOTerrain();
     public void setupVBO (GL2 gl) {
-    	// Do not run the code if we had already ran it
-    	if(runOnceSetupVBO){
-    		return;
-    	}
-    	runOnceSetupVBO = true;
-    	
-    	// Size of 2d grid + 
+        // Do not run the code if we had already ran it
+        if(runOnceSetupVBO){
+            return;
+        }
+        runOnceSetupVBO = true;
+        
+        // Size of 2d grid + 
         // x2 (2 triangles per grid)
         // x3 (3 points per triangle)
         numPoints =  mySize.width*mySize.height *2 *3;
@@ -243,11 +243,11 @@ public class Terrain {
         float p2[] = {0, 0, 0};
         float p3[] = {0, 0, 0};
         float texcoordA[] = {0, 0,
-        				     0, 1,
-        				     1, 0};
+                             0, 1,
+                             1, 0};
         float texcoordB[] = {1, 1,
-        					 1, 0,
-        					 0, 1};
+                             1, 0,
+                             0, 1};
         // holds result of normal calculations
         float[] n;
         // index for positions
@@ -324,30 +324,30 @@ public class Terrain {
         gl.glGenBuffers(1, bufferID, 0);
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferID[0]);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, 
-				numPoints*3*Float.BYTES +
-				numNormals*3*Float.BYTES +
-				numTextures*2*Float.BYTES, 
-				null, 
-				GL2.GL_STATIC_DRAW);
+                numPoints*3*Float.BYTES +
+                numNormals*3*Float.BYTES +
+                numTextures*2*Float.BYTES, 
+                null, 
+                GL2.GL_STATIC_DRAW);
         posData = Buffers.newDirectFloatBuffer(positions);
         positions = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
-				0,
-				numPoints*3*Float.BYTES,
-				posData);
+                0,
+                numPoints*3*Float.BYTES,
+                posData);
         normData = Buffers.newDirectFloatBuffer(normals);
         normals = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
-        		numPoints*3*Float.BYTES,
-				numNormals*3*Float.BYTES,
-				normData);
+                numPoints*3*Float.BYTES,
+                numNormals*3*Float.BYTES,
+                normData);
         texData = Buffers.newDirectFloatBuffer(textures);
         textures = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
-        		numPoints*3*Float.BYTES +
-				numNormals*3*Float.BYTES,
-				numTextures*2*Float.BYTES,
-				texData);
+                numPoints*3*Float.BYTES +
+                numNormals*3*Float.BYTES,
+                numTextures*2*Float.BYTES,
+                texData);
     }
     
     /**
@@ -359,18 +359,18 @@ public class Terrain {
         MaterialLightProp.terrainLightProp(gl);
         gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
-    	gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferID[0]);
-    	gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-    	gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-    	gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-    	gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
-    	gl.glNormalPointer(GL.GL_FLOAT, 0, numPoints*3*Float.BYTES);
-    	gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, numPoints*3*Float.BYTES + numNormals*3*Float.BYTES);
-    	gl.glDrawArrays(GL2.GL_TRIANGLES, 0, numPoints);
-    	//gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-    	//gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-    	//gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-    	//gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferID[0]);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+        gl.glNormalPointer(GL.GL_FLOAT, 0, numPoints*3*Float.BYTES);
+        gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, numPoints*3*Float.BYTES + numNormals*3*Float.BYTES);
+        gl.glDrawArrays(GL2.GL_TRIANGLES, 0, numPoints);
+        //gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        //gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        //gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
     }
 
     /**

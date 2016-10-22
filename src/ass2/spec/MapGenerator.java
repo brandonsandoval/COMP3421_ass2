@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
-//	by Shin
+// by Shin
 public class MapGenerator {
     
     public static final String INPUT = "./tests/mapXL.png";

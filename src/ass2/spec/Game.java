@@ -57,8 +57,17 @@ public class Game extends JFrame implements GLEventListener {
     
     // Camera
     private Camera myCamera;
+    // How high and far should the camera be
+    private double CAMERA_HEIGHT = 3;
+    private double CAMERA_DISTANCE = 4;
     
-    //	Portal
+    // Movement speed: How fast the avatar/camera moves
+    private double moveSpeed = 0.3;
+    
+    // Avatar
+    private Avatar avatar;
+    
+    // Portal
     //private Portal portal_in;
     //private Portal portal_out;
     
@@ -74,7 +83,7 @@ public class Game extends JFrame implements GLEventListener {
     private long timing = 0;
     private int count = 0;
     
-    //	Other
+    // Other
     boolean wireframeMode;
     boolean drawCoord;
 
@@ -83,32 +92,32 @@ public class Game extends JFrame implements GLEventListener {
      *           CONSTRUCTOR            *
      ***********************************/
      public Game(Terrain terrain) {
-    	 
+         
         super("Assignment 2");
         
         this.myTerrain = terrain;
-        this.myCamera = new Camera(terrain);
+        this.myCamera = new Camera(terrain, CAMERA_HEIGHT, CAMERA_DISTANCE);
         
         this.myMouse = new MouseController();
         this.myKeyboard = new KeyboardController();
         
-        //	Setting Portal IDs
+        // Setting Portal IDs
         //this.portal_in = new Portal(0);
         //this.portal_out = new Portal(1);
         
-        //	Setting Portal Location
+        // Setting Portal Location
         //portal_in.setPos(new double[] {141,135,120});
         //portal_out.setPos(new double[] {145,135,120});
         
         this.timing = 0;
         this.count = 0;
         
-        //	Set Cursor Invisible
+        // Set Cursor Invisible
         this.cursorImg = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
         blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg
                 , new Point(0,0), "blank cursor");
         
-        //	Other
+        // Other
         this.wireframeMode = false;
         this.drawCoord = false;
         
@@ -119,7 +128,7 @@ public class Game extends JFrame implements GLEventListener {
       *         METHOD (RUN)             *
       ***********************************/
     public void run() {
-    	
+        
         // Init Profile
         GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
@@ -172,87 +181,67 @@ public class Game extends JFrame implements GLEventListener {
             count = 0;
         }
 
-        //	Camera Updates
+        // Camera Updates
         double[] pos = Camera.getPos();
         double[] angle = Camera.getAngle();
 
-        //	Camera uses EULER ANGLES
-        //	PITCH and YAW
-        //if(!Camera.getThirdPerson()) {
-            // WSAD [MOVEMENT]
-            if(KeyboardController.key(Keys.W)) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                if(Camera.getThirdPerson()){
-                    pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]));
-                }else{
-                    pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]+45));
-                }
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
+        // Camera uses EULER ANGLES
+        // WSAD [MOVEMENT]
+        if(KeyboardController.key(Keys.W)) {
+            pos[Game.X] += moveSpeed * Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+            if(Camera.getThirdPerson()){
+                pos[Game.Y] += moveSpeed * Math.sin(Math.toRadians(angle[Game.Z]));
+            }else{
+                pos[Game.Y] += moveSpeed * Math.sin(Math.toRadians(angle[Game.Z]+45));
             }
-            if(KeyboardController.key(Keys.S)) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                if(Camera.getThirdPerson()){
-                    pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]));
-                }else{
-                    pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]+45));
-                }
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(KeyboardController.key(Keys.A)) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-            if(KeyboardController.key(Keys.D)) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }/*
-        } else {
-            if(KeyboardController.key(Keys.W)) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] += Math.sin(Math.toRadians(angle[Game.Z]+45));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(KeyboardController.key(Keys.S)) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Y] -= Math.sin(Math.toRadians(angle[Game.Z]+45));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]));
-            }
-            if(KeyboardController.key(Keys.A)) {
-                pos[Game.X] += Math.cos(Math.toRadians(angle[Game.Y]+90));
-                pos[Game.Z] -= Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-            if(KeyboardController.key(Keys.D)) {
-                pos[Game.X] -= Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
-                pos[Game.Z] += Math.sin(Math.toRadians(angle[Game.Y]+90));
-            }
-        }*/
-            
-        // QE [ALTITUDE]
-        if(KeyboardController.key(Keys.SPACE)) {
-            pos[Game.Y] += 100;
+            pos[Game.Z] -= moveSpeed * Math.sin(Math.toRadians(angle[Game.Y]));
         }
-        if(KeyboardController.key(Keys.SHIFT)) {
+        if(KeyboardController.key(Keys.S)) {
+            pos[Game.X] -= moveSpeed * Math.cos(Math.toRadians(angle[Game.Y])) * Math.cos(Math.toRadians(angle[Game.Z]));
+            if(Camera.getThirdPerson()){
+                pos[Game.Y] -= moveSpeed * Math.sin(Math.toRadians(angle[Game.Z]));
+            }else{
+                pos[Game.Y] -= moveSpeed * Math.sin(Math.toRadians(angle[Game.Z]+45));
+            }
+            pos[Game.Z] += moveSpeed * Math.sin(Math.toRadians(angle[Game.Y]));
+        }
+        if(KeyboardController.key(Keys.A)) {
+            pos[Game.X] += moveSpeed * Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
+            pos[Game.Z] -= moveSpeed * Math.sin(Math.toRadians(angle[Game.Y]+90));
+        }
+        if(KeyboardController.key(Keys.D)) {
+            pos[Game.X] -= moveSpeed * Math.cos(Math.toRadians(angle[Game.Y]+90));// * Math.cos(Math.toRadians(angle[Game.Z]));
+            pos[Game.Z] += moveSpeed * Math.sin(Math.toRadians(angle[Game.Y]+90));
+        }
+            
+        // SPACE/CONTROL [ALTITUDE]
+        if(KeyboardController.key(Keys.SPACE)) {
+            pos[Game.Y] += 2;
+        }
+        if(KeyboardController.key(Keys.CONTROL)) {
             pos[Game.Y] -= 1;
         }
 
         // ARROW KEYS [ROTATE] - only used for testing
         if(KeyboardController.key(Keys.UP)) {
-            angle[Game.Z] += 1;
+            angle[Game.Z] += 10;
         }
         if(KeyboardController.key(Keys.DOWN)) {
-            angle[Game.Z] -= 1;
+            angle[Game.Z] -= 10;
         }
         if(KeyboardController.key(Keys.LEFT)) {
-            angle[Game.Y] += 1;
+            angle[Game.Y] += 10;
         }
         if(KeyboardController.key(Keys.RIGHT)) {
-            angle[Game.Y] -= 1;
+            angle[Game.Y] -= 10;
         }
 
         // OTHER TOGGLES
+        // Mouse lock
         if(KeyboardController.keyToggle(Keys.T)) {
             Camera.setMouseLock(!Camera.getMouseLock());
         }
+        // Toggle 1st/3rd person
         if(KeyboardController.keyToggle(Keys.V)) {
             Camera.setThirdPerson(!Camera.getThirdPerson());
             if(Camera.getThirdPerson()) {
@@ -265,6 +254,7 @@ public class Game extends JFrame implements GLEventListener {
                 angle[Game.Z] = 0;
             }
         }
+        // Gravity and collision toggle
         if(KeyboardController.keyToggle(Keys.G)) {
             Camera.setGravity(!Camera.getGravity());
             System.out.println("GRAVITY:" + Camera.getGravity());
@@ -273,56 +263,67 @@ public class Game extends JFrame implements GLEventListener {
             Camera.setCollision(!Camera.getCollision());
             System.out.println("COLLISION:" + Camera.getCollision());
         }
+        // Camera rotation lock toggle (in 3rd person)
+        if(KeyboardController.keyToggle(Keys.R)) {
+            avatar.setRotationLock(!avatar.getRotationLock());
+        }
+        // Speed boost toggle
+        if(KeyboardController.keyToggle(Keys.X)) {
+            if((moveSpeed == 0.3) || (moveSpeed == 0.1)) {
+                moveSpeed = 1;
+            }else if(moveSpeed == 1) {
+                moveSpeed = 0.3;
+            }
+        }
         
-        //	COLLISION WITH END OF MAP
-        //	CURRENTLY ONLY WORKS FOR < 0
+        // COLLISION WITH END OF MAP
         if(pos[Game.X] < 0) {
-        	pos[Game.X] = 0;
-        } else if(pos[Game.X] > myTerrain.size().getHeight()) {
-        	pos[Game.X] = myTerrain.size().getHeight();
+            pos[Game.X] = 0;
+        } else if(pos[Game.X] > myTerrain.size().getHeight()-1.01) {
+            pos[Game.X] = myTerrain.size().getHeight()-1.01;
         }
         if(pos[Game.Z] < 0) {
-        	pos[Game.Z] = 0;
-        } else if(pos[Game.Z] > myTerrain.size().getWidth()) {
-        	pos[Game.Z] = myTerrain.size().getWidth();
+            pos[Game.Z] = 0;
+        } else if(pos[Game.Z] > myTerrain.size().getWidth()-1.01) {
+            pos[Game.Z] = myTerrain.size().getWidth()-1.01;
         }
         System.out.println("SIZE: " + myTerrain.size().getHeight());
         System.out.println("X: " + pos[Game.X]);
         System.out.println("Z: " + pos[Game.Z]);
         
-        //	Portal Update
+        // Portal Update
 /*        double[] portalPosA = portal_in.getPos();
         double[] portalPosB = portal_out.getPos();
         
-        //	If player enters portal A
+        // If player enters portal A
         if((portalPosA[Game.X] == Math.round(pos[Game.X]))
-        		&& (portalPosA[Game.Y] == Math.round(pos[Game.Y])
-        				||	portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
-        		&& (portalPosA[Game.Z] == Math.round(pos[Game.Z]))) {
-        	
-        	 double[] temp = portalPosB.clone();
-        	 temp[Game.X] += 1;
-        	 
-        	 Camera.setPos(temp);
-        	 System.out.println("PORTAL A TO B");
-        	
-        //	If player enters portal B
+                && (portalPosA[Game.Y] == Math.round(pos[Game.Y])
+                        ||    portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
+                && (portalPosA[Game.Z] == Math.round(pos[Game.Z]))) {
+            
+             double[] temp = portalPosB.clone();
+             temp[Game.X] += 1;
+             
+             Camera.setPos(temp);
+             System.out.println("PORTAL A TO B");
+            
+        // If player enters portal B
         } else if((portalPosB[Game.X] == Math.round(pos[Game.X]))
-        		&& (portalPosB[Game.Y] == Math.round(pos[Game.Y])
-        				||	portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
-        		&& (portalPosB[Game.Z] == Math.round(pos[Game.Z]))) {
-        	
-	       	 double[] temp = portalPosA.clone();
-	       	 temp[Game.X] += 1;
-	       	 
-        	 Camera.setPos(temp);
-        	 System.out.println("PORTAL B TO A");
+                && (portalPosB[Game.Y] == Math.round(pos[Game.Y])
+                        ||    portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
+                && (portalPosB[Game.Z] == Math.round(pos[Game.Z]))) {
+            
+                double[] temp = portalPosA.clone();
+                temp[Game.X] += 1;
+                
+             Camera.setPos(temp);
+             System.out.println("PORTAL B TO A");
         }
         
-        //	Portal Animation
+        // Portal Animation
         if(count % 5 == 0) {
-		    portal_in.nextImg();
-		    portal_out.nextImg();
+            portal_in.nextImg();
+            portal_out.nextImg();
         }
         
         count ++;*/
@@ -350,7 +351,7 @@ public class Game extends JFrame implements GLEventListener {
             myCamera.update();
         } else {
             myCamera.setView(gl);
-            myCamera.draw(gl);
+            avatar.draw(gl);
             myCamera.update();
         }
 
@@ -363,12 +364,12 @@ public class Game extends JFrame implements GLEventListener {
         
         // Draws X, Y, Z but only without Lights
         if(drawCoord) {
-        	drawCoor(gl, 128, 140, 128);
+            drawCoor(gl, 128, 140, 128);
         }
         
         // Wireframe Mode
         if(wireframeMode) {
-        	gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+            gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
         }
         
         myTerrain.drawVBOTerrain(gl);
@@ -386,7 +387,7 @@ public class Game extends JFrame implements GLEventListener {
             road.drawRoad(gl);
         }
         
-        //	Draw Portals
+        // Draw Portals
         //portal_in.drawPortal(gl);
         //portal_out.drawPortal(gl);
         
@@ -397,11 +398,11 @@ public class Game extends JFrame implements GLEventListener {
     
     // Drawing X, Y, Z
     public void drawCoor(GL2 gl, double x, double y, double z) {
-    	double length = 12;
+        double length = 12;
         gl.glLineWidth(10);
         gl.glBegin(GL2.GL_LINES); {
             // X (RED)
-        	MaterialLightProp.redLightProp(gl);
+            MaterialLightProp.redLightProp(gl);
             gl.glVertex3d(x+length, y, z);
             gl.glVertex3d(x, y, z);
         
@@ -409,7 +410,7 @@ public class Game extends JFrame implements GLEventListener {
         
         gl.glBegin(GL2.GL_LINES); {
             // Y (GREEN)
-        	MaterialLightProp.greenLightProp(gl);
+            MaterialLightProp.greenLightProp(gl);
             gl.glVertex3d(x, y+length, z);
             gl.glVertex3d(x, y, z);
         
@@ -417,7 +418,7 @@ public class Game extends JFrame implements GLEventListener {
         
         gl.glBegin(GL2.GL_LINES); {
             // Z (BLUE)
-        	MaterialLightProp.blueLightProp(gl);
+            MaterialLightProp.blueLightProp(gl);
             gl.glVertex3d(x, y, z+length);
             gl.glVertex3d(x, y, z);
         
@@ -463,19 +464,23 @@ public class Game extends JFrame implements GLEventListener {
         gl.glEnable(GL2.GL_TEXTURE_2D);
         myTerrain.loadTerrain(gl, true);
        
-        //	Load Tree Texture
+        // Load Tree Texture
         List<Tree> trees = myTerrain.trees();
         for(Tree tree : trees) {
             tree.loadTexture(gl, true);
         }
         
-        //	Load Road Texture
+        // Load Road Texture
         List<Road> roads = myTerrain.roads();
         for(Road road : roads) {
-        	road.loadTexture(gl, true);
+            road.loadTexture(gl, true);
         }
+
+        // Setup Avatar
+        avatar = new Avatar(CAMERA_HEIGHT);
+        avatar.loadTexture(gl, true);
         
-        //	Load Portal Textures
+        // Load Portal Textures
         //portal_in.loadTexture(gl, true);
         //portal_out.loadTexture(gl, true);
         

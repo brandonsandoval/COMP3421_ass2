@@ -52,6 +52,8 @@ public class KeyboardController implements KeyListener {
             return Keys.SPACE.ordinal();
         if(ke.getKeyCode() == KeyEvent.VK_SHIFT)
             return Keys.SHIFT.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_CONTROL)
+            return Keys.CONTROL.ordinal();
         if(ke.getKeyCode() == KeyEvent.VK_LEFT)
             return Keys.LEFT.ordinal();
         if(ke.getKeyCode() == KeyEvent.VK_RIGHT)
@@ -76,6 +78,11 @@ public class KeyboardController implements KeyListener {
             return Keys.G.ordinal();
         if(ke.getKeyCode() == KeyEvent.VK_V)
             return Keys.V.ordinal();
-        return 0;
+        if(ke.getKeyCode() == KeyEvent.VK_R)
+            return Keys.R.ordinal();
+        if(ke.getKeyCode() == KeyEvent.VK_X)
+            return Keys.X.ordinal();
+        
+        return Keys.UNUSED.ordinal();
     }
 }
