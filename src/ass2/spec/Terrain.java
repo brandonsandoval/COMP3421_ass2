@@ -234,14 +234,20 @@ public class Terrain {
         numPoints =  mySize.width*mySize.height *2 *3;
         numNormals = mySize.width*mySize.height *2 *3;
         numTextures =mySize.width*mySize.height *2 *3;
-        // x3 (3 dimensions per point/normal)
-        // but 2 dimensions on texture images
-        positions = new float[numPoints *3];
-        normals = new float[numNormals *3];
-        textures = new float[numNormals *2];
+        
         // 4 points of a square (from x,z to x+1,z+1 with altitude y)
         // and 2 texture cord maps triangles A and B
-        // see diagram below
+        /*
+         *  p0 ---- p2
+         *  |     / |
+         *  | A  /  |
+         *  |   / B |
+         *  |  /    |
+         *  p1 ---- p3
+         *  
+         *  p0 -> p1 -> p2  == A
+         *  p3 -> p2 -> p1  == B
+         */
         float p0[] = {0, 0, 0};
         float p1[] = {0, 0, 0};
         float p2[] = {0, 0, 0};
@@ -252,29 +258,23 @@ public class Terrain {
         float texcoordB[] = {1, 1,
                              1, 0,
                              0, 1};
-        // holds result of normal calculations
-        float[] n;
-        // index for positions
-        int iP = 0;
-        // index for normals
-        int iN = 0;
-        // index for texture coords
-        int iT = 0;
-        // loop over the altitude grid in myTerrain
+        // Set up VBO
+        gl.glGenBuffers(1, bufferID, 0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferID[0]);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, 
+                numPoints*3*Float.BYTES +
+                numNormals*3*Float.BYTES +
+                numTextures*2*Float.BYTES, 
+                null, 
+                GL2.GL_STATIC_DRAW);
+
+        // x3 (3 dimensions per point)
+        positions = new float[numPoints *3];
+        int i = 0;
+        // loop over the altitude grid in myTerrain to build position data
         for(int z = 0; z < size().height -1; z++) {
             for(int x = 0; x < size().width -1; x++) {
             
-                /*
-                 *  p0 ---- p2
-                 *  |     / |
-                 *  | A  /  |
-                 *  |   / B |
-                 *  |  /    |
-                 *  p1 ---- p3
-                 *  
-                 *  p0 -> p1 -> p2  == A
-                 *  p3 -> p2 -> p1  == B
-                 */
                 // p0
                 p0[0] = x;
                 p0[1] = (float)getGridAltitude(x, z);
@@ -294,57 +294,85 @@ public class Terrain {
                 
                 // Store both these triangles points into array positions
                 // Triangle A -> positions
-                System.arraycopy(p0, 0, positions, iP      , 3);
-                System.arraycopy(p1, 0, positions, iP+(1*3), 3);
-                System.arraycopy(p2, 0, positions, iP+(2*3), 3);
+                System.arraycopy(p0, 0, positions, i      , 3);
+                System.arraycopy(p1, 0, positions, i+(1*3), 3);
+                System.arraycopy(p2, 0, positions, i+(2*3), 3);
                 // Triangle B -> positions
-                System.arraycopy(p3, 0, positions, iP+(3*3), 3);
-                System.arraycopy(p2, 0, positions, iP+(4*3), 3);
-                System.arraycopy(p1, 0, positions, iP+(5*3), 3);
+                System.arraycopy(p3, 0, positions, i+(3*3), 3);
+                System.arraycopy(p2, 0, positions, i+(4*3), 3);
+                System.arraycopy(p1, 0, positions, i+(5*3), 3);
                 // position index jumps by 6 points * 3 dimensions
-                iP += 6*3;
-
-                // Vertex Normals
-                // Triangle A -> normals
-                n = MathUtil.normal(p0, p1, p2);
-                System.arraycopy(n, 0, normals, iN      , 3);
-                System.arraycopy(n, 0, normals, iN+(1*3), 3);
-                System.arraycopy(n, 0, normals, iN+(2*3), 3);
-                // Triangle A -> normals
-                n = MathUtil.normal(p3, p2, p1);
-                System.arraycopy(n, 0, normals, iN+(3*3), 3);
-                System.arraycopy(n, 0, normals, iN+(4*3), 3);
-                System.arraycopy(n, 0, normals, iN+(5*3), 3);
-                // normal index jumps by 6 normals * 3 dimensions
-                iN += 6*3;
-                
-                // Texture coords
-                System.arraycopy(texcoordA, 0, textures, iT  , 6);
-                System.arraycopy(texcoordB, 0, textures, iT+6, 6);
-                iT += 12;
+                i += 6*3;
             }
         }
-        // Set up VBO
-        gl.glGenBuffers(1, bufferID, 0);
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferID[0]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, 
-                numPoints*3*Float.BYTES +
-                numNormals*3*Float.BYTES +
-                numTextures*2*Float.BYTES, 
-                null, 
-                GL2.GL_STATIC_DRAW);
         posData = Buffers.newDirectFloatBuffer(positions);
         positions = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
                 0,
                 numPoints*3*Float.BYTES,
                 posData);
+
+        // x3 (3 dimensions per normal)
+        normals = new float[numNormals *3];
+        // holds result of normal calculations
+        float[] n;
+        i = 0;
+        // loop over the altitude grid in myTerrain to build normal data
+        for(int z = 0; z < size().height -1; z++) {
+            for(int x = 0; x < size().width -1; x++) {
+            
+                // p0
+                p0[0] = x;
+                p0[1] = (float)getGridAltitude(x, z);
+                p0[2] = z;
+                // p1
+                p1[0] = x;
+                p1[1] = (float)getGridAltitude(x, z+1);
+                p1[2] = z+1;
+                // p2
+                p2[0] = x+1;
+                p2[1] = (float)getGridAltitude(x+1, z);
+                p2[2] = z;
+                // p3
+                p3[0] = x+1;
+                p3[1] = (float)getGridAltitude(x+1, z+1);
+                p3[2] = z+1;
+
+                // Vertex Normals
+                // Triangle A -> normals
+                n = MathUtil.normal(p0, p1, p2);
+                System.arraycopy(n, 0, normals, i      , 3);
+                System.arraycopy(n, 0, normals, i+(1*3), 3);
+                System.arraycopy(n, 0, normals, i+(2*3), 3);
+                // Triangle A -> normals
+                n = MathUtil.normal(p3, p2, p1);
+                System.arraycopy(n, 0, normals, i+(3*3), 3);
+                System.arraycopy(n, 0, normals, i+(4*3), 3);
+                System.arraycopy(n, 0, normals, i+(5*3), 3);
+                // normal index jumps by 6 normals * 3 dimensions
+                i += 6*3;
+            }
+        }
         normData = Buffers.newDirectFloatBuffer(normals);
         normals = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
                 numPoints*3*Float.BYTES,
                 numNormals*3*Float.BYTES,
                 normData);
+
+        // x2 (2 dimensions per coord in texture)
+        textures = new float[numNormals *2];
+        i = 0;
+        // loop over the altitude grid in myTerrain to build texture coord data
+        for(int z = 0; z < size().height -1; z++) {
+            for(int x = 0; x < size().width -1; x++) {
+                
+                // Texture coords
+                System.arraycopy(texcoordA, 0, textures, i  , 6);
+                System.arraycopy(texcoordB, 0, textures, i+6, 6);
+                i += 12;
+            }
+        }
         texData = Buffers.newDirectFloatBuffer(textures);
         textures = null;
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 
