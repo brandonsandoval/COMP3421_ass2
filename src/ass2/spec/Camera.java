@@ -140,5 +140,6 @@ public class Camera {
     public static void setMouseLock(boolean v) {mouseLock = v;}
     public static void setGravity(boolean v) {gravity = v;}
     public static void setCollision(boolean v) {collision = v;}
+    public static void setCameraPos(double[] pos) {cameraPos = pos;}
     
 }

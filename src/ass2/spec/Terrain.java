@@ -44,6 +44,8 @@ public class Terrain {
     private int[] bufferID = new int[1];
     // Store whether VBO has already been initialized
     private boolean runOnceSetupVBO = false;
+	private Portal portalA;
+	private Portal portalB;
     
     /**
      * Create a new terrain
@@ -498,5 +500,23 @@ public class Terrain {
             }
         }
     }
+    
+	public void addPortal(double x, double z, int id) {
+		if(id == 0) {
+			portalA = new Portal(x, altitude(x,z), z, id);
+		} else {
+			portalB = new Portal(x, altitude(x,z), z , id);
+		}
+	}
+	
+	public Portal[] getPortals() {
+		Portal portals[] = {portalA, portalB};
+		return portals;
+	}
+
+	public boolean hasPortals() {
+		if(portalA == null || portalB == null) return false;
+		return true;
+	}
 
 }

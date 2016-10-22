@@ -11,10 +11,8 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -68,8 +66,8 @@ public class Game extends JFrame implements GLEventListener {
     private Avatar avatar;
     
     // Portal
-    //private Portal portal_in;
-    //private Portal portal_out;
+    private Portal portal_in;
+    private Portal portal_out;
     
     // Mouse and Keyboard listeners
     private MouseController myMouse;
@@ -102,12 +100,11 @@ public class Game extends JFrame implements GLEventListener {
         this.myKeyboard = new KeyboardController();
         
         // Setting Portal IDs
-        //this.portal_in = new Portal(0);
-        //this.portal_out = new Portal(1);
+        if(this.myTerrain.hasPortals()) {
+	        this.portal_in = this.myTerrain.getPortals()[0];
+	        this.portal_out = this.myTerrain.getPortals()[1];
+        }
         
-        // Setting Portal Location
-        //portal_in.setPos(new double[] {141,135,120});
-        //portal_out.setPos(new double[] {145,135,120});
         
         this.timing = 0;
         this.count = 0;
@@ -294,41 +291,46 @@ public class Game extends JFrame implements GLEventListener {
         
         
         // Portal Update
-/*        double[] portalPosA = portal_in.getPos();
-        double[] portalPosB = portal_out.getPos();
-        
-        // If player enters portal A
-        if((portalPosA[Game.X] == Math.round(pos[Game.X]))
-                && (portalPosA[Game.Y] == Math.round(pos[Game.Y])
-                        ||    portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
-                && (portalPosA[Game.Z] == Math.round(pos[Game.Z]))) {
-            
-             double[] temp = portalPosB.clone();
-             temp[Game.X] += 1;
-             
-             Camera.setPos(temp);
-             System.out.println("PORTAL A TO B");
-            
-        // If player enters portal B
-        } else if((portalPosB[Game.X] == Math.round(pos[Game.X]))
-                && (portalPosB[Game.Y] == Math.round(pos[Game.Y])
-                        ||    portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
-                && (portalPosB[Game.Z] == Math.round(pos[Game.Z]))) {
-            
-                double[] temp = portalPosA.clone();
-                temp[Game.X] += 1;
-                
-             Camera.setPos(temp);
-             System.out.println("PORTAL B TO A");
+        if(this.myTerrain.hasPortals()) {
+	        double[] portalPosA = portal_in.getPos();
+	        double[] portalPosB = portal_out.getPos();
+	        
+	        System.out.println("PORTAL A: " + portalPosA[Game.X] + " " + portalPosA[Game.Y] + " " + portalPosA[Game.Z]);
+	        System.out.println("PORTAL B: " + portalPosB[Game.X] + " " + portalPosB[Game.Y] + " " + portalPosB[Game.Z]);
+	        System.out.println("POS: " + pos[Game.X] + " " + pos[Game.Y] + " " + pos[Game.Z]);
+	        
+	        // If player enters portal A
+	        if((portalPosA[Game.X] == Math.round(pos[Game.X]))
+	                && (portalPosA[Game.Y] == Math.round(pos[Game.Y])
+	                        ||    portalPosA[Game.Y] == Math.round(pos[Game.Y]+1))
+	                && (portalPosA[Game.Z] == Math.round(pos[Game.Z]))) {
+	            
+	             double[] temp = portalPosB.clone();
+	             temp[Game.X] += 1;
+	             
+	             Camera.setCameraPos(temp);
+	             System.out.println("PORTAL A TO B");
+	            
+	        // If player enters portal B
+	        } else if((portalPosB[Game.X] == Math.round(pos[Game.X]))
+	                && (portalPosB[Game.Y] == Math.round(pos[Game.Y])
+	                        ||    portalPosB[Game.Y] == Math.round(pos[Game.Y]+1))
+	                && (portalPosB[Game.Z] == Math.round(pos[Game.Z]))) {
+	            
+	                double[] temp = portalPosA.clone();
+	                temp[Game.X] += 1;
+	                
+	             Camera.setCameraPos(temp);
+	             System.out.println("PORTAL B TO A");
+	        }
+	        
+	        // Portal Animation
+	        if(count % 5 == 0) {
+	            portal_in.nextImg();
+	            portal_out.nextImg();
+	        }
         }
-        
-        // Portal Animation
-        if(count % 5 == 0) {
-            portal_in.nextImg();
-            portal_out.nextImg();
-        }
-        
-        count ++;*/
+        count ++;
         
     }
     
@@ -396,9 +398,10 @@ public class Game extends JFrame implements GLEventListener {
         }
         
         // Draw Portals
-        //portal_in.drawPortal(gl);
-        //portal_out.drawPortal(gl);
-        
+        if(this.myTerrain.hasPortals()) {
+	        portal_in.drawPortal(gl);
+	        portal_out.drawPortal(gl);
+        }
         // Needed for Debugging
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         
@@ -496,8 +499,10 @@ public class Game extends JFrame implements GLEventListener {
         avatar.loadTexture(gl, true);
         
         // Load Portal Textures
-        //portal_in.loadTexture(gl, true);
-        //portal_out.loadTexture(gl, true);
+        if(this.myTerrain.hasPortals()) {
+	        portal_in.loadTexture(gl, true);
+	        portal_out.loadTexture(gl, true);
+        }
         
         // Setup terrain VBO
         myTerrain.setupVBO(gl);

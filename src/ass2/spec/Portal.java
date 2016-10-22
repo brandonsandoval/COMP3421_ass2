@@ -19,8 +19,8 @@ public class Portal {
     double n;
     double m;
     
-    public Portal(int portalID) {
-        this.pos = new double[3];
+    public Portal(double x, double y, double z, int portalID) {
+        this.pos = new double[]{x, y+2, z};
         this.in = false;
         this.portalID = portalID;
         
@@ -31,11 +31,11 @@ public class Portal {
         this.m = 1;
     }
     
-    public void setPos(double[] pos) {
+/*    public void setPos(double[] pos) {
         this.pos[Game.X] = pos[Game.X];
         this.pos[Game.Y] = pos[Game.Y];
         this.pos[Game.Z] = pos[Game.Z];
-    }
+    }*/
     
     public double[] getPos() {
         return this.pos;
@@ -89,7 +89,7 @@ public class Portal {
     }
     
     public void nextImg() {
-        System.out.println("n: " + n + " m: " + m); 
+        //System.out.println("n: " + n + " m: " + m); 
         if(n > col) {
             n = 1;
             m++;
