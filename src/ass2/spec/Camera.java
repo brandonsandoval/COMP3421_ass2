@@ -64,9 +64,9 @@ public class Camera {
     public Camera(Terrain myTerrain, double height, double viewDistance) {
         Camera.myTerrain = myTerrain;
         
-        System.out.println("Setting up Camera");
+        //System.out.println("Setting up Camera");
         // Camera
-        System.out.println(myTerrain.size().width+","+myTerrain.size().height);
+        //System.out.println(myTerrain.size().width+","+myTerrain.size().height);
         cameraPos = new double[3];
         cameraPos[Game.X] = myTerrain.size().width / 2;
         cameraPos[Game.Y] = 0;

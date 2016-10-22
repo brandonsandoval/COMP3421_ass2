@@ -13,8 +13,8 @@ import org.json.JSONObject;
 // by Shin
 public class MapGenerator {
     
-    public static final String INPUT = "./tests/mapXL.png";
-    public static final String OUTPUT = "./tests/mapXL.json";
+    public static final String INPUT = "./tests/map.jpg";
+    public static final String OUTPUT = "./tests/map_temp.json";
     
     public static void main(String[] args) {
         MapGenerator map = new MapGenerator();
@@ -25,8 +25,8 @@ public class MapGenerator {
 
         try {
             
-            System.out.println("STARTING");
-            System.out.println("READING FILE...");
+            //System.out.println("STARTING");
+            //System.out.println("READING FILE...");
             
             File input = new File(INPUT);
             BufferedImage image = ImageIO.read(input);
@@ -60,7 +60,7 @@ public class MapGenerator {
             obj.put("altitude", altitude);
             
             bw.write(obj.toString(4));
-            System.out.println("FINSHED.");
+            //System.out.println("FINSHED.");
             bw.close();
             
         } catch (Exception e) {}
